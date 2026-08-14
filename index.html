@@ -1,437 +1,1687 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Relatório de Turno</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Relatório Operacional Mobile</title>
 
   <style>
+    :root {
+      --bg: #f3f6fb;
+      --card: #ffffff;
+      --primary: #1d4ed8;
+      --primary-dark: #1e3a8a;
+      --green: #16a34a;
+      --red: #dc2626;
+      --yellow: #f59e0b;
+      --orange: #ea580c;
+      --purple: #7c3aed;
+      --dark: #111827;
+      --muted: #6b7280;
+      --border: #dbe3ef;
+      --soft-blue: #dbeafe;
+      --soft-green: #dcfce7;
+      --soft-red: #fee2e2;
+      --soft-yellow: #fef3c7;
+      --soft-orange: #ffedd5;
+      --soft-purple: #ede9fe;
+      --radius: 18px;
+      --shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+    }
+
     * {
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f3f4f6;
-      color: #111827;
+      background: var(--bg);
+      color: var(--dark);
+      font-size: 15px;
     }
 
-    .container {
-      max-width: 1100px;
+    button,
+    input,
+    select,
+    textarea {
+      font-size: 16px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .app {
+      min-height: 100vh;
+      max-width: 760px;
       margin: 0 auto;
-      padding: 16px;
+      background: var(--bg);
     }
 
     .header {
-      background: #111827;
-      color: #ffffff;
-      padding: 18px;
-      border-radius: 12px;
-      margin-bottom: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(243, 246, 251, 0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 14px 10px;
+    }
+
+    .header-main {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
     }
 
     .header h1 {
       margin: 0;
-      font-size: 22px;
+      font-size: 20px;
+      line-height: 1.2;
     }
 
-    .header p {
-      margin: 6px 0 0;
-      font-size: 14px;
-      color: #d1d5db;
-    }
-
-    .status-box {
-      padding: 12px;
-      border-radius: 10px;
-      margin-bottom: 16px;
+    .header small {
+      color: var(--muted);
       font-weight: bold;
-      background: #e5e7eb;
-      color: #374151;
     }
 
-    .status-ok {
-      background: #dcfce7;
-      color: #166534;
+    .step-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 7px;
     }
 
-    .status-error {
-      background: #fee2e2;
-      color: #991b1b;
+    .step-tab {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 9px 4px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .step-tab.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .content {
+      padding: 14px;
+      padding-bottom: 90px;
+    }
+
+    .step {
+      display: none;
+    }
+
+    .step.active {
+      display: block;
     }
 
     .card {
-      background: #ffffff;
-      padding: 16px;
-      border-radius: 12px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 15px;
+      box-shadow: var(--shadow);
+      margin-bottom: 14px;
     }
 
-    .card h2 {
-      margin-top: 0;
-      font-size: 18px;
-      color: #111827;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
+    .card-title {
+      font-weight: bold;
+      font-size: 15px;
+      margin-bottom: 10px;
+      color: var(--primary-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
     }
 
     label {
       display: block;
-      font-size: 13px;
       font-weight: bold;
-      margin-bottom: 5px;
-      color: #374151;
+      margin-top: 12px;
+      font-size: 14px;
+      color: #334155;
     }
 
     input,
     select,
     textarea {
       width: 100%;
-      padding: 11px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      font-size: 15px;
-      background: #ffffff;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+      outline: none;
+      margin-top: 6px;
+      color: var(--dark);
     }
 
     textarea {
-      min-height: 90px;
+      min-height: 76px;
       resize: vertical;
     }
 
-    .full {
-      grid-column: 1 / -1;
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
     }
 
-    .buttons {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 14px;
-    }
-
-    button {
+    .btn {
+      width: 100%;
       border: none;
-      border-radius: 8px;
-      padding: 11px 16px;
-      font-size: 15px;
+      border-radius: 14px;
+      padding: 13px 14px;
       font-weight: bold;
       cursor: pointer;
+      background: var(--primary);
+      color: #fff;
+      margin-top: 10px;
+      min-height: 46px;
     }
 
-    .btn-primary {
-      background: #2563eb;
-      color: #ffffff;
+    .btn:active {
+      transform: scale(0.99);
     }
 
-    .btn-secondary {
-      background: #e5e7eb;
-      color: #111827;
+    .btn-green {
+      background: var(--green);
     }
 
-    .btn-danger {
-      background: #dc2626;
-      color: #ffffff;
+    .btn-red {
+      background: var(--red);
     }
 
-    .lista {
+    .btn-dark {
+      background: #111827;
+    }
+
+    .btn-light {
+      background: #fff;
+      color: var(--dark);
+      border: 1px solid var(--border);
+    }
+
+    .btn-row {
       display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
-    }
-
-    .item {
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      padding: 12px;
-      background: #f9fafb;
-    }
-
-    .item strong {
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    .item small {
-      color: #6b7280;
-    }
-
-    .legenda {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      font-size: 14px;
       margin-top: 8px;
     }
 
-    @media (max-width: 700px) {
-      .grid {
+    .hint {
+      background: var(--soft-blue);
+      color: var(--primary-dark);
+      border: 1px solid #bfdbfe;
+      padding: 12px;
+      border-radius: 14px;
+      font-weight: bold;
+      line-height: 1.4;
+      margin-top: 10px;
+    }
+
+    .warning {
+      background: var(--soft-yellow);
+      color: #92400e;
+      border: 1px solid #fde68a;
+      padding: 12px;
+      border-radius: 14px;
+      font-weight: bold;
+      line-height: 1.4;
+      margin-top: 10px;
+    }
+
+    .success {
+      background: var(--soft-green);
+      color: #166534;
+      border: 1px solid #bbf7d0;
+      padding: 12px;
+      border-radius: 14px;
+      font-weight: bold;
+      line-height: 1.4;
+      margin-top: 10px;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .team-item,
+    .area-item {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      margin-top: 10px;
+      background: #f8fafc;
+    }
+
+    .team-top,
+    .area-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .team-top strong,
+    .area-top strong {
+      display: block;
+      font-size: 15px;
+    }
+
+    .small-btn {
+      border: none;
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 12px;
+      background: var(--soft-red);
+      color: #991b1b;
+      flex-shrink: 0;
+    }
+
+    .small-edit {
+      background: var(--soft-yellow);
+      color: #92400e;
+    }
+
+    .small-blue {
+      background: var(--soft-blue);
+      color: var(--primary-dark);
+    }
+
+    .equipment-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+    }
+
+    .equipment-card.selected {
+      border-color: var(--primary);
+      background: #eff6ff;
+    }
+
+    .equipment-main {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .equip-check {
+      width: 24px;
+      height: 24px;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .equip-name {
+      font-weight: bold;
+      line-height: 1.3;
+    }
+
+    .equip-area {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+      font-weight: normal;
+    }
+
+    .equipment-status {
+      margin-top: 10px;
+    }
+
+    .details-toggle {
+      width: 100%;
+      border: 1px dashed var(--border);
+      background: #f8fafc;
+      color: var(--primary-dark);
+      border-radius: 12px;
+      padding: 10px;
+      font-weight: bold;
+      margin-top: 10px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .details-box {
+      display: none;
+      margin-top: 10px;
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+    }
+
+    .details-box.open {
+      display: block;
+    }
+
+    .mass-box {
+      position: sticky;
+      top: 95px;
+      z-index: 15;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+
+    .select-all-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .select-all-line input {
+      width: 24px;
+      height: 24px;
+      margin: 0;
+      flex-shrink: 0;
+    }
+
+    .counter {
+      display: inline-block;
+      background: var(--soft-purple);
+      color: #5b21b6;
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 13px;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+
+    .area-title {
+      font-size: 17px;
+      font-weight: bold;
+      color: #0f172a;
+      margin: 18px 0 10px;
+      padding-left: 4px;
+      border-left: 5px solid var(--primary);
+    }
+
+    .area-note {
+      margin: -4px 0 10px;
+      color: var(--muted);
+      font-size: 13px;
+      padding-left: 10px;
+    }
+
+    .output {
+      background: #0f172a;
+      color: #e5e7eb;
+      padding: 14px;
+      border-radius: 16px;
+      white-space: pre-wrap;
+      min-height: 300px;
+      font-family: Consolas, monospace;
+      line-height: 1.5;
+      font-size: 14px;
+      overflow-x: auto;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      max-width: 760px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid var(--border);
+      padding: 10px 14px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      z-index: 30;
+    }
+
+    .bottom-nav .btn {
+      margin-top: 0;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .summary-card {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .summary-card strong {
+      display: block;
+      font-size: 22px;
+      margin-bottom: 2px;
+    }
+
+    .pill {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+
+    .pill-blue {
+      background: var(--soft-blue);
+      color: var(--primary-dark);
+    }
+
+    .pill-green {
+      background: var(--soft-green);
+      color: #166534;
+    }
+
+    .pill-orange {
+      background: var(--soft-orange);
+      color: #9a3412;
+    }
+
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-bg.open {
+      display: flex;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 420px;
+      background: #fff;
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.25);
+    }
+
+    .modal h3 {
+      margin: 0 0 10px;
+    }
+
+    .modal p {
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    @media (max-width: 420px) {
+      .step-tabs {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .mass-box {
+        top: 135px;
+      }
+
+      .summary-grid {
         grid-template-columns: 1fr;
       }
 
-      .container {
-        padding: 10px;
-      }
-
-      .header h1 {
-        font-size: 19px;
-      }
-
-      button {
-        width: 100%;
+      .btn-row {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
+  <div class="app">
 
-    <div class="header">
-      <h1>Relatório de Turno</h1>
-      <p>Sistema operacional conectado ao Supabase</p>
-    </div>
-
-    <div id="statusConexao" class="status-box">
-      Verificando conexão com o banco de dados...
-    </div>
-
-    <div class="card">
-      <h2>Novo Relatório</h2>
-
-      <div class="grid">
+    <header class="header">
+      <div class="header-main">
         <div>
-          <label for="data">Data</label>
-          <input type="date" id="data" />
+          <h1>Relatório Operacional</h1>
+          <small id="headerSub">Fluxo simples para celular</small>
+        </div>
+        <span class="pill pill-blue" id="currentTypePill">Mecânica</span>
+      </div>
+
+      <div class="step-tabs">
+        <button class="step-tab active" onclick="goStep(1)">1. Turno</button>
+        <button class="step-tab" onclick="goStep(2)">2. Tipo</button>
+        <button class="step-tab" onclick="goStep(3)">3. Preencher</button>
+        <button class="step-tab" onclick="goStep(4)">4. Relatório</button>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- ETAPA 1 -->
+      <section id="step1" class="step active">
+        <div class="card">
+          <div class="card-title">Dados do turno</div>
+
+          <label>Data</label>
+          <input id="dataTurno" type="date">
+
+          <label>Turno</label>
+          <input id="turnoTexto" type="text" value="A: 07:30 até as 16:00">
+
+          <label>Check list</label>
+          <textarea id="checklistTexto" placeholder="Ex: ✅ 016003"></textarea>
+
+          <label>Ordens de serviço</label>
+          <textarea id="ordensTexto" placeholder="Ex: ✅ 011229&#10;✅ 013214&#10;✅ 011626"></textarea>
+
+          <label>Observação geral do turno</label>
+          <textarea id="obsGeral" placeholder="Ex: Limpeza dos compressores 01 e 02 realizada."></textarea>
         </div>
 
-        <div>
-          <label for="turno">Turno</label>
-          <input type="text" id="turno" placeholder="Ex: 7:30 às 16:00" />
-        </div>
+        <div class="card">
+          <div class="card-title">Equipe</div>
 
-        <div>
-          <label for="mecanico">Mecânico</label>
-          <input type="text" id="mecanico" placeholder="Nome do mecânico" />
-        </div>
+          <label>Nome</label>
+          <input id="novoColaboradorNome" type="text" placeholder="Ex: Geilton">
 
-        <div>
-          <label for="auxiliar">Auxiliar</label>
-          <input type="text" id="auxiliar" placeholder="Nome do auxiliar" />
-        </div>
-
-        <div>
-          <label for="equipamento">Equipamento</label>
-          <input type="text" id="equipamento" placeholder="Ex: INFLÁVEL 01" />
-        </div>
-
-        <div>
-          <label for="status">Status</label>
-          <select id="status">
-            <option value="✅ - Conforme">✅ - Conforme</option>
-            <option value="❌ - Fora de funcionamento">❌ - Fora de funcionamento</option>
-            <option value="⚠️ - Em funcionamento com pendência">⚠️ - Em funcionamento com pendência</option>
+          <label>Função</label>
+          <select id="novoColaboradorFuncao">
+            <option>Mecânico</option>
+            <option>Auxiliar mecânico</option>
+            <option>Eletricista</option>
+            <option>Auxiliar</option>
+            <option>Operador</option>
+            <option>Líder</option>
+            <option>Outro</option>
           </select>
+
+          <button class="btn btn-green" onclick="adicionarColaborador()">Adicionar na equipe</button>
+
+          <div id="listaColaboradores"></div>
         </div>
 
-        <div class="full">
-          <label for="observacao">Observação</label>
-          <textarea id="observacao" placeholder="Descreva a pendência, serviço realizado ou observação do turno"></textarea>
+        <div class="card">
+          <div class="card-title">Dados salvos neste aparelho</div>
+          <div class="hint">
+            O sistema salva automaticamente os dados neste navegador para não perder o preenchimento ao atualizar a página.
+          </div>
+          <button class="btn btn-red" onclick="limparDadosLocais()">Limpar dados salvos</button>
         </div>
-      </div>
+      </section>
 
-      <div class="legenda">
-        <div>✅ - Conforme</div>
-        <div>❌ - Fora de funcionamento</div>
-        <div>⚠️ - Em funcionamento com pendência</div>
-      </div>
+      <!-- ETAPA 2 -->
+      <section id="step2" class="step">
+        <div class="card">
+          <div class="card-title">Tipo de relatório</div>
 
-      <div class="buttons">
-        <button class="btn-primary" onclick="salvarRelatorio()">Salvar Relatório</button>
-        <button class="btn-secondary" onclick="carregarRelatorios()">Atualizar Lista</button>
-        <button class="btn-danger" onclick="limparFormulario()">Limpar</button>
-      </div>
+          <label>Escolha o relatório</label>
+          <select id="tipoRelatorio" onchange="alterarTipoRelatorio(this.value)">
+            <option value="mecanica">Mecânica</option>
+            <option value="inflaveis">Infláveis</option>
+            <option value="eletrica">Elétrica</option>
+          </select>
+
+          <div class="hint" id="tipoInfo">
+            Mecânica: mostra todos os equipamentos, exceto infláveis.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Resumo</div>
+
+          <div class="summary-grid">
+            <div class="summary-card">
+              <strong id="totalAreas">0</strong>
+              <span>Áreas visíveis</span>
+            </div>
+
+            <div class="summary-card">
+              <strong id="totalEquipamentos">0</strong>
+              <span>Equipamentos visíveis</span>
+            </div>
+          </div>
+
+          <div class="warning">
+            Mecânica não mostra infláveis. Infláveis mostra somente infláveis. Elétrica mostra tudo.
+          </div>
+        </div>
+      </section>
+
+      <!-- ETAPA 3 -->
+      <section id="step3" class="step">
+
+        <div class="mass-box">
+          <label class="select-all-line">
+            <input id="selectAllVisible" type="checkbox" onchange="toggleSelecionarTodos()">
+            <span>Selecionar todos visíveis</span>
+          </label>
+
+          <label>Aplicar condição</label>
+          <select id="statusMassa">
+            <option value="✅">✅ Conforme</option>
+            <option value="❌">❌ Fora de funcionamento</option>
+            <option value="⚠️">⚠️ Em funcionamento com pendência</option>
+            <option value="🚧">🚧 Bloqueado para manutenção</option>
+            <option value="🚨">🚨 Atenção / ocorrência</option>
+            <option value="">Limpar status</option>
+          </select>
+
+          <button class="btn btn-green" onclick="aplicarStatusMassa()">Aplicar nos selecionados</button>
+
+          <span class="counter" id="contadorSelecionados">0 selecionados</span>
+        </div>
+
+        <div id="listaEquipamentos"></div>
+      </section>
+
+      <!-- ETAPA 4 -->
+      <section id="step4" class="step">
+        <div class="card">
+          <div class="card-title">Relatório final</div>
+
+          <button class="btn btn-green" onclick="gerarRelatorioFinal()">Gerar relatório</button>
+          <button class="btn btn-dark" onclick="copiarRelatorio()">Copiar relatório</button>
+
+          <div id="copyMsg" class="success hidden">
+            Relatório copiado. Se estiver no iPhone e não copiar, selecione o texto manualmente.
+          </div>
+        </div>
+
+        <div class="card">
+          <div id="saidaRelatorio" class="output">Clique em "Gerar relatório".</div>
+        </div>
+      </section>
+
+    </main>
+
+    <div class="bottom-nav">
+      <button id="prevBtn" class="btn btn-light" onclick="voltarStep()">Voltar</button>
+      <button id="nextBtn" class="btn" onclick="avancarStep()">Avançar</button>
     </div>
-
-    <div class="card">
-      <h2>Relatórios Salvos</h2>
-      <div id="listaRelatorios" class="lista">
-        Carregando relatórios...
-      </div>
-    </div>
-
   </div>
 
-  <script type="module">
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+  <!-- MODAL SIMPLES -->
+  <div id="modalBg" class="modal-bg">
+    <div class="modal">
+      <h3 id="modalTitle">Aviso</h3>
+      <p id="modalText">Mensagem</p>
+      <button class="btn" onclick="fecharModal()">Entendi</button>
+    </div>
+  </div>
 
-    /*
-      DADOS DO SUPABASE
-      Se precisar trocar, me mande sua URL e anon key que eu devolvo o arquivo completo.
-    */
-    const SUPABASE_URL = 'COLE_AQUI_SUA_URL_DO_SUPABASE';
-    const SUPABASE_ANON_KEY = 'COLE_AQUI_SUA_CHAVE_ANON_PUBLIC';
+  <script>
+    var stepAtual = 1;
+    var tipoRelatorioAtual = "mecanica";
+    var STORAGE_KEY = "relatorio_operacional_mobile_v1";
 
-    /*
-      Nome da tabela usada no Supabase.
-      Estou considerando: relatorios_operacionais
-    */
-    const TABELA = 'relatorios_operacionais';
+    var colaboradores = [
+      { nome: "Geilton", funcao: "Mecânico" },
+      { nome: "Wagner", funcao: "Eletricista" },
+      { nome: "José Erbete", funcao: "Auxiliar mecânico" }
+    ];
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    var areas = [
+      {
+        id: gerarId(),
+        nome: "PLANTA 01",
+        observacao: "Bloqueada para manutenção 🚧",
+        equipamentos: [
+          criarEquipamento("ELEVADOR 01"),
+          criarEquipamento("PENEIRA 01"),
+          criarEquipamento("DESIGNADOR"),
+          criarEquipamento("MISTURADOR"),
+          criarEquipamento("ELEVADOR 02"),
+          criarEquipamento("PENEIRA 02"),
+          criarEquipamento("POSICIONADOR 01"),
+          criarEquipamento("POSICIONADOR 02"),
+          criarEquipamento("SOPRADOR")
+        ]
+      },
+      {
+        id: gerarId(),
+        nome: "PLANTA 02",
+        observacao: "",
+        equipamentos: [
+          criarEquipamento("ELEVADOR 01", "✅", "Teve desarme no horário de 08:45. Equipe identificou rolamento danificado sentido BR. Foi realizada a substituição e liberado para produção às 10:40."),
+          criarEquipamento("PENEIRA 01", "✅"),
+          criarEquipamento("DESIGNADOR", "✅"),
+          criarEquipamento("MISTURADOR", "⚠️", "Paradas constantes. Cilindros encontravam-se com reparos danificados, ocasionando perda constante de ar e atraso na abertura da mandíbula."),
+          criarEquipamento("ELEVADOR 02", "✅"),
+          criarEquipamento("PENEIRA 02", "✅"),
+          criarEquipamento("POSICIONADOR 01", "✅"),
+          criarEquipamento("POSICIONADOR 02", "✅")
+        ]
+      },
+      {
+        id: gerarId(),
+        nome: "PLANTA 03",
+        observacao: "",
+        equipamentos: [
+          criarEquipamento("ELEVADOR 01", "✅"),
+          criarEquipamento("PENEIRA 01", "✅"),
+          criarEquipamento("SOPRADOR", "✅"),
+          criarEquipamento("POSICIONADOR 01", "✅"),
+          criarEquipamento("POSICIONADOR 02", "✅"),
+          criarEquipamento("MOINHO", "✅", "Realizada a substituição da tampa de visita que estava danificada.")
+        ]
+      },
+      {
+        id: gerarId(),
+        nome: "PLANTA 04",
+        observacao: "",
+        equipamentos: [
+          criarEquipamento("ELEVADOR", "✅"),
+          criarEquipamento("PENEIRA", "✅"),
+          criarEquipamento("MOINHO", "✅"),
+          criarEquipamento("CT01", "✅", "Solda de suporte realizada."),
+          criarEquipamento("CT02", "✅"),
+          criarEquipamento("CT03", "✅"),
+          criarEquipamento("POSICIONADOR 01", "✅"),
+          criarEquipamento("POSICIONADOR 02", "✅")
+        ]
+      },
+      {
+        id: gerarId(),
+        nome: "DESCARGA",
+        observacao: "",
+        equipamentos: [
+          criarEquipamento("CT01", "🚧"),
+          criarEquipamento("CT02", "🚧"),
+          criarEquipamento("CT03", "🚧")
+        ]
+      },
+      {
+        id: gerarId(),
+        nome: "ENSACADEIRA",
+        observacao: "Sem operação",
+        equipamentos: []
+      },
+      {
+        id: gerarId(),
+        nome: "INFLÁVEL 01",
+        observacao: "",
+        equipamentos: [
+          criarEquipamento("INSUFLADOR 01", "✅"),
+          criarEquipamento("INSUFLADOR 02", "✅")
+        ]
+      },
+      {
+        id: gerarId(),
+        nome: "INFLÁVEL 03",
+        observacao: "",
+        equipamentos: [
+          criarEquipamento("INSUFLADOR 01", "✅"),
+          criarEquipamento("INSUFLADOR 02", "✅")
+        ]
+      },
+      {
+        id: gerarId(),
+        nome: "INFLÁVEL 04",
+        observacao: "",
+        equipamentos: [
+          criarEquipamento("INSUFLADOR 01", "✅"),
+          criarEquipamento("INSUFLADOR 02", "✅")
+        ]
+      },
+      {
+        id: gerarId(),
+        nome: "INFLÁVEL 05",
+        observacao: "",
+        equipamentos: [
+          criarEquipamento("INSUFLADOR 01", "✅"),
+          criarEquipamento("INSUFLADOR 02", "✅")
+        ]
+      },
+      {
+        id: gerarId(),
+        nome: "INFLÁVEL 06",
+        observacao: "",
+        equipamentos: [
+          criarEquipamento("INSUFLADOR 01", "✅"),
+          criarEquipamento("INSUFLADOR 02", "✅")
+        ]
+      },
+      {
+        id: gerarId(),
+        nome: "INFLÁVEL 07",
+        observacao: "",
+        equipamentos: [
+          criarEquipamento("INSUFLADOR 01", "✅"),
+          criarEquipamento("INSUFLADOR 02", "✅")
+        ]
+      },
+      {
+        id: gerarId(),
+        nome: "INFLÁVEL 08",
+        observacao: "",
+        equipamentos: [
+          criarEquipamento("INSUFLADOR 01", "✅"),
+          criarEquipamento("INSUFLADOR 02", "✅")
+        ]
+      },
+      {
+        id: gerarId(),
+        nome: "INFLÁVEL 09",
+        observacao: "",
+        equipamentos: [
+          criarEquipamento("INSUFLADOR 01", "✅"),
+          criarEquipamento("INSUFLADOR 02", "✅")
+        ]
+      },
+      {
+        id: gerarId(),
+        nome: "INFLÁVEL 10",
+        observacao: "",
+        equipamentos: [
+          criarEquipamento("INSUFLADOR 01", "✅"),
+          criarEquipamento("INSUFLADOR 02", "✅")
+        ]
+      }
+    ];
 
-    const statusConexao = document.getElementById('statusConexao');
-    const listaRelatorios = document.getElementById('listaRelatorios');
+    iniciar();
 
-    function mostrarStatus(mensagem, tipo) {
-      statusConexao.textContent = mensagem;
-      statusConexao.className = 'status-box';
+    function iniciar() {
+      var hoje = new Date();
+      var dataInput = document.getElementById("dataTurno");
 
-      if (tipo === 'ok') {
-        statusConexao.classList.add('status-ok');
+      if (dataInput && !dataInput.value) {
+        dataInput.value = hoje.toISOString().split("T")[0];
       }
 
-      if (tipo === 'erro') {
-        statusConexao.classList.add('status-error');
+      carregarDadosLocais();
+
+      renderColaboradores();
+      renderEquipamentos();
+      atualizarResumoTipo();
+      atualizarBotoes();
+      configurarAutoSalvar();
+    }
+
+    function configurarAutoSalvar() {
+      var ids = ["dataTurno", "turnoTexto", "checklistTexto", "ordensTexto", "obsGeral", "tipoRelatorio"];
+
+      for (var i = 0; i < ids.length; i++) {
+        var el = document.getElementById(ids[i]);
+        if (el) {
+          el.addEventListener("input", salvarDadosLocais);
+          el.addEventListener("change", salvarDadosLocais);
+        }
       }
+
+      window.addEventListener("beforeunload", salvarDadosLocais);
     }
 
-    function dataHoje() {
-      const hoje = new Date();
-      const ano = hoje.getFullYear();
-      const mes = String(hoje.getMonth() + 1).padStart(2, '0');
-      const dia = String(hoje.getDate()).padStart(2, '0');
-      return `${ano}-${mes}-${dia}`;
-    }
-
-    document.getElementById('data').value = dataHoje();
-
-    async function testarConexao() {
+    function salvarDadosLocais() {
       try {
-        const { error } = await supabase
-          .from(TABELA)
-          .select('id')
-          .limit(1);
+        var dados = {
+          dataTurno: valorElemento("dataTurno"),
+          turnoTexto: valorElemento("turnoTexto"),
+          checklistTexto: valorElemento("checklistTexto"),
+          ordensTexto: valorElemento("ordensTexto"),
+          obsGeral: valorElemento("obsGeral"),
+          tipoRelatorioAtual: tipoRelatorioAtual,
+          colaboradores: colaboradores,
+          areas: areas
+        };
 
-        if (error) {
-          console.error('Erro Supabase:', error);
-          mostrarStatus('Erro no Supabase: confira URL, chave ou nome da tabela.', 'erro');
-          return;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
+      } catch (e) {
+        console.log("Não foi possível salvar localmente:", e);
+      }
+    }
+
+    function carregarDadosLocais() {
+      try {
+        var bruto = localStorage.getItem(STORAGE_KEY);
+        if (!bruto) return;
+
+        var dados = JSON.parse(bruto);
+
+        if (dados.dataTurno) document.getElementById("dataTurno").value = dados.dataTurno;
+        if (dados.turnoTexto !== undefined) document.getElementById("turnoTexto").value = dados.turnoTexto;
+        if (dados.checklistTexto !== undefined) document.getElementById("checklistTexto").value = dados.checklistTexto;
+        if (dados.ordensTexto !== undefined) document.getElementById("ordensTexto").value = dados.ordensTexto;
+        if (dados.obsGeral !== undefined) document.getElementById("obsGeral").value = dados.obsGeral;
+
+        if (dados.tipoRelatorioAtual) {
+          tipoRelatorioAtual = dados.tipoRelatorioAtual;
+          document.getElementById("tipoRelatorio").value = tipoRelatorioAtual;
         }
 
-        mostrarStatus('Banco de dados conectado com sucesso.', 'ok');
-      } catch (erro) {
-        console.error('Erro geral:', erro);
-        mostrarStatus('Erro ao conectar com o banco de dados.', 'erro');
+        if (Array.isArray(dados.colaboradores)) {
+          colaboradores = dados.colaboradores;
+        }
+
+        if (Array.isArray(dados.areas)) {
+          areas = dados.areas;
+        }
+      } catch (e) {
+        console.log("Não foi possível carregar dados locais:", e);
       }
     }
 
-    async function salvarRelatorio() {
-      const data = document.getElementById('data').value;
-      const turno = document.getElementById('turno').value.trim();
-      const mecanico = document.getElementById('mecanico').value.trim();
-      const auxiliar = document.getElementById('auxiliar').value.trim();
-      const equipamento = document.getElementById('equipamento').value.trim();
-      const status = document.getElementById('status').value;
-      const observacao = document.getElementById('observacao').value.trim();
+    function limparDadosLocais() {
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch (e) {
+        console.log("Erro ao limpar dados:", e);
+      }
 
-      if (!data || !turno || !equipamento) {
-        mostrarStatus('Preencha pelo menos Data, Turno e Equipamento.', 'erro');
+      abrirModal("Concluído", "Dados salvos neste aparelho foram limpos. Atualize a página para voltar ao modelo inicial.");
+    }
+
+    function valorElemento(id) {
+      var el = document.getElementById(id);
+      return el ? el.value : "";
+    }
+
+    function gerarId() {
+      return Math.random().toString(36).substring(2, 10) + String(new Date().getTime());
+    }
+
+    function criarEquipamento(nome, status, observacao, pendencia, acao) {
+      return {
+        id: gerarId(),
+        nome: nome || "",
+        status: status || "",
+        observacao: observacao || "",
+        pendencia: pendencia || "",
+        acao: acao || "",
+        selecionado: false,
+        detalheAberto: false
+      };
+    }
+
+    function goStep(numero) {
+      stepAtual = numero;
+
+      var steps = document.querySelectorAll(".step");
+      for (var i = 0; i < steps.length; i++) {
+        steps[i].classList.remove("active");
+      }
+
+      document.getElementById("step" + numero).classList.add("active");
+
+      var tabs = document.querySelectorAll(".step-tab");
+      for (var j = 0; j < tabs.length; j++) {
+        tabs[j].classList.remove("active");
+      }
+
+      tabs[numero - 1].classList.add("active");
+
+      atualizarBotoes();
+
+      window.scrollTo(0, 0);
+    }
+
+    function avancarStep() {
+      if (stepAtual < 4) {
+        goStep(stepAtual + 1);
+      } else {
+        gerarRelatorioFinal();
+      }
+    }
+
+    function voltarStep() {
+      if (stepAtual > 1) {
+        goStep(stepAtual - 1);
+      }
+    }
+
+    function atualizarBotoes() {
+      var prev = document.getElementById("prevBtn");
+      var next = document.getElementById("nextBtn");
+
+      if (stepAtual === 1) {
+        prev.disabled = true;
+        prev.style.opacity = "0.5";
+      } else {
+        prev.disabled = false;
+        prev.style.opacity = "1";
+      }
+
+      if (stepAtual === 4) {
+        next.textContent = "Gerar";
+      } else {
+        next.textContent = "Avançar";
+      }
+    }
+
+    function alterarTipoRelatorio(tipo) {
+      tipoRelatorioAtual = tipo;
+      document.getElementById("tipoRelatorio").value = tipo;
+
+      limparSelecao();
+      renderEquipamentos();
+      atualizarResumoTipo();
+      salvarDadosLocais();
+    }
+
+    function obterNomeTipo() {
+      if (tipoRelatorioAtual === "mecanica") return "Mecânica";
+      if (tipoRelatorioAtual === "inflaveis") return "Infláveis";
+      if (tipoRelatorioAtual === "eletrica") return "Elétrica";
+      return "Mecânica";
+    }
+
+    function atualizarResumoTipo() {
+      document.getElementById("currentTypePill").textContent = obterNomeTipo();
+
+      var info = "";
+      if (tipoRelatorioAtual === "mecanica") {
+        info = "Mecânica: mostra todos os equipamentos, exceto infláveis.";
+      } else if (tipoRelatorioAtual === "inflaveis") {
+        info = "Infláveis: mostra somente equipamentos de infláveis.";
+      } else {
+        info = "Elétrica: mostra todos os equipamentos cadastrados.";
+      }
+
+      document.getElementById("tipoInfo").textContent = info;
+
+      var areasVisiveis = obterAreasVisiveis();
+      var totalEq = 0;
+
+      for (var i = 0; i < areasVisiveis.length; i++) {
+        totalEq += areasVisiveis[i].equipamentos.length;
+      }
+
+      document.getElementById("totalAreas").textContent = areasVisiveis.length;
+      document.getElementById("totalEquipamentos").textContent = totalEq;
+    }
+
+    function normalizarTexto(texto) {
+      return String(texto || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toUpperCase();
+    }
+
+    function areaEhInflavel(area) {
+      return normalizarTexto(area.nome).indexOf("INFLAVEL") >= 0;
+    }
+
+    function obterAreasVisiveis() {
+      var filtradas = [];
+
+      for (var i = 0; i < areas.length; i++) {
+        var area = areas[i];
+
+        if (tipoRelatorioAtual === "mecanica" && !areaEhInflavel(area)) {
+          filtradas.push(area);
+        }
+
+        if (tipoRelatorioAtual === "inflaveis" && areaEhInflavel(area)) {
+          filtradas.push(area);
+        }
+
+        if (tipoRelatorioAtual === "eletrica") {
+          filtradas.push(area);
+        }
+      }
+
+      return filtradas;
+    }
+
+    function adicionarColaborador() {
+      var nome = document.getElementById("novoColaboradorNome").value.trim();
+      var funcao = document.getElementById("novoColaboradorFuncao").value;
+
+      if (!nome) {
+        abrirModal("Atenção", "Digite o nome do colaborador.");
         return;
       }
 
-      const novoRelatorio = {
-        data: data,
-        turno: turno,
-        mecanico: mecanico,
-        auxiliar: auxiliar,
-        equipamento: equipamento,
-        status: status,
-        observacao: observacao
-      };
+      colaboradores.push({
+        nome: nome,
+        funcao: funcao
+      });
 
-      try {
-        const { error } = await supabase
-          .from(TABELA)
-          .insert([novoRelatorio]);
+      document.getElementById("novoColaboradorNome").value = "";
+      renderColaboradores();
+      salvarDadosLocais();
+    }
 
-        if (error) {
-          console.error('Erro ao salvar:', error);
-          mostrarStatus('Erro ao salvar no Supabase. Confira as colunas da tabela.', 'erro');
-          return;
-        }
+    function removerColaborador(index) {
+      colaboradores.splice(index, 1);
+      renderColaboradores();
+      salvarDadosLocais();
+    }
 
-        mostrarStatus('Relatório salvo com sucesso.', 'ok');
-        limparFormulario();
-        carregarRelatorios();
+    function renderColaboradores() {
+      var box = document.getElementById("listaColaboradores");
+      box.innerHTML = "";
 
-      } catch (erro) {
-        console.error('Erro geral ao salvar:', erro);
-        mostrarStatus('Erro inesperado ao salvar.', 'erro');
+      if (colaboradores.length === 0) {
+        box.innerHTML = '<div class="warning">Nenhum colaborador informado.</div>';
+        return;
+      }
+
+      for (var i = 0; i < colaboradores.length; i++) {
+        var c = colaboradores[i];
+
+        var div = document.createElement("div");
+        div.className = "team-item";
+
+        div.innerHTML =
+          '<div class="team-top">' +
+            '<div>' +
+              '<strong>' + escapeHtml(c.funcao) + '</strong>' +
+              '<span class="muted">' + escapeHtml(c.nome) + '</span>' +
+            '</div>' +
+            '<button class="small-btn" onclick="removerColaborador(' + i + ')">Excluir</button>' +
+          '</div>';
+
+        box.appendChild(div);
       }
     }
 
-    async function carregarRelatorios() {
-      listaRelatorios.innerHTML = 'Carregando relatórios...';
+    function renderEquipamentos() {
+      var box = document.getElementById("listaEquipamentos");
+      box.innerHTML = "";
 
-      try {
-        const { data, error } = await supabase
-          .from(TABELA)
-          .select('*')
-          .order('created_at', { ascending: false })
-          .limit(30);
+      var areasVisiveis = obterAreasVisiveis();
 
-        if (error) {
-          console.error('Erro ao carregar:', error);
-          listaRelatorios.innerHTML = 'Erro ao carregar relatórios.';
-          mostrarStatus('Erro ao buscar dados no Supabase.', 'erro');
-          return;
+      if (areasVisiveis.length === 0) {
+        box.innerHTML = '<div class="warning">Nenhum equipamento encontrado para este tipo de relatório.</div>';
+        atualizarContadorSelecionados();
+        return;
+      }
+
+      for (var a = 0; a < areasVisiveis.length; a++) {
+        var area = areasVisiveis[a];
+
+        var title = document.createElement("div");
+        title.className = "area-title";
+        title.textContent = area.nome;
+        box.appendChild(title);
+
+        if (area.observacao) {
+          var note = document.createElement("div");
+          note.className = "area-note";
+          note.textContent = area.observacao;
+          box.appendChild(note);
         }
 
-        if (!data || data.length === 0) {
-          listaRelatorios.innerHTML = 'Nenhum relatório salvo ainda.';
-          return;
+        if (area.equipamentos.length === 0) {
+          var empty = document.createElement("div");
+          empty.className = "warning";
+          empty.textContent = "Esta área não possui equipamentos.";
+          box.appendChild(empty);
         }
 
-        listaRelatorios.innerHTML = data.map((item) => {
-          return `
-            <div class="item">
-              <strong>${item.equipamento || 'Sem equipamento'} — ${item.status || ''}</strong>
-              <small>Data: ${item.data || '-'} | Turno: ${item.turno || '-'}</small>
-              <div>Mecânico: ${item.mecanico || '-'}</div>
-              <div>Auxiliar: ${item.auxiliar || '-'}</div>
-              <div>Observação: ${item.observacao || '-'}</div>
-            </div>
-          `;
-        }).join('');
+        for (var e = 0; e < area.equipamentos.length; e++) {
+          var eq = area.equipamentos[e];
 
-      } catch (erro) {
-        console.error('Erro geral ao carregar:', erro);
-        listaRelatorios.innerHTML = 'Erro inesperado ao carregar relatórios.';
+          var card = document.createElement("div");
+          card.className = "equipment-card" + (eq.selecionado ? " selected" : "");
+          card.setAttribute("data-eqid", eq.id);
+
+          var detalheClass = eq.detalheAberto ? "details-box open" : "details-box";
+          var toggleText = eq.detalheAberto ? "Ocultar detalhes" : "+ Detalhes";
+
+          card.innerHTML =
+            '<div class="equipment-main">' +
+              '<input class="equip-check" type="checkbox" ' +
+                (eq.selecionado ? "checked" : "") +
+                ' onchange="marcarEquipamento(\'' + area.id + '\', \'' + eq.id + '\', this.checked)">' +
+
+              '<div>' +
+                '<div class="equip-name">' + escapeHtml(eq.nome) + '</div>' +
+                '<div class="equip-area">' + escapeHtml(area.nome) + '</div>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="equipment-status">' +
+              '<select onchange="atualizarCampoEquipamento(\'' + area.id + '\', \'' + eq.id + '\', \'status\', this.value)">' +
+                '<option value="" ' + selected(eq.status, "") + '>Sem status</option>' +
+                '<option value="✅" ' + selected(eq.status, "✅") + '>✅ Conforme</option>' +
+                '<option value="❌" ' + selected(eq.status, "❌") + '>❌ Fora de funcionamento</option>' +
+                '<option value="⚠️" ' + selected(eq.status, "⚠️") + '>⚠️ Com pendência</option>' +
+                '<option value="🚧" ' + selected(eq.status, "🚧") + '>🚧 Bloqueado</option>' +
+                '<option value="🚨" ' + selected(eq.status, "🚨") + '>🚨 Atenção</option>' +
+              '</select>' +
+            '</div>' +
+
+            '<button class="details-toggle" onclick="alternarDetalhes(\'' + area.id + '\', \'' + eq.id + '\')">' + toggleText + '</button>' +
+
+            '<div class="' + detalheClass + '">' +
+              '<label>Observação</label>' +
+              '<textarea placeholder="Só aparece se preencher" oninput="atualizarCampoEquipamento(\'' + area.id + '\', \'' + eq.id + '\', \'observacao\', this.value)">' + escapeHtml(eq.observacao) + '</textarea>' +
+
+              '<label>Pendência</label>' +
+              '<textarea placeholder="Só aparece se preencher" oninput="atualizarCampoEquipamento(\'' + area.id + '\', \'' + eq.id + '\', \'pendencia\', this.value)">' + escapeHtml(eq.pendencia) + '</textarea>' +
+
+              '<label>Ação realizada</label>' +
+              '<textarea placeholder="Só aparece se preencher" oninput="atualizarCampoEquipamento(\'' + area.id + '\', \'' + eq.id + '\', \'acao\', this.value)">' + escapeHtml(eq.acao) + '</textarea>' +
+            '</div>';
+
+          box.appendChild(card);
+        }
+      }
+
+      atualizarContadorSelecionados();
+      atualizarCheckboxSelecionarTodos();
+    }
+
+    function selected(atual, valor) {
+      return atual === valor ? "selected" : "";
+    }
+
+    function encontrarEquipamento(areaId, eqId) {
+      for (var i = 0; i < areas.length; i++) {
+        if (areas[i].id === areaId) {
+          for (var j = 0; j < areas[i].equipamentos.length; j++) {
+            if (areas[i].equipamentos[j].id === eqId) {
+              return areas[i].equipamentos[j];
+            }
+          }
+        }
+      }
+
+      return null;
+    }
+
+    function marcarEquipamento(areaId, eqId, marcado) {
+      var eq = encontrarEquipamento(areaId, eqId);
+      if (!eq) return;
+
+      eq.selecionado = marcado;
+
+      var card = document.querySelector('[data-eqid="' + eqId + '"]');
+      if (card) {
+        if (marcado) {
+          card.classList.add("selected");
+        } else {
+          card.classList.remove("selected");
+        }
+      }
+
+      atualizarContadorSelecionados();
+      atualizarCheckboxSelecionarTodos();
+      salvarDadosLocais();
+    }
+
+    function atualizarCampoEquipamento(areaId, eqId, campo, valor) {
+      var eq = encontrarEquipamento(areaId, eqId);
+      if (!eq) return;
+
+      eq[campo] = valor;
+      salvarDadosLocais();
+    }
+
+    function alternarDetalhes(areaId, eqId) {
+      var eq = encontrarEquipamento(areaId, eqId);
+      if (!eq) return;
+
+      eq.detalheAberto = !eq.detalheAberto;
+      renderEquipamentos();
+      salvarDadosLocais();
+    }
+
+    function toggleSelecionarTodos() {
+      var checked = document.getElementById("selectAllVisible").checked;
+      var areasVisiveis = obterAreasVisiveis();
+
+      for (var i = 0; i < areasVisiveis.length; i++) {
+        for (var j = 0; j < areasVisiveis[i].equipamentos.length; j++) {
+          areasVisiveis[i].equipamentos[j].selecionado = checked;
+        }
+      }
+
+      renderEquipamentos();
+      salvarDadosLocais();
+    }
+
+    function atualizarCheckboxSelecionarTodos() {
+      var check = document.getElementById("selectAllVisible");
+      if (!check) return;
+
+      var areasVisiveis = obterAreasVisiveis();
+      var total = 0;
+      var marcados = 0;
+
+      for (var i = 0; i < areasVisiveis.length; i++) {
+        for (var j = 0; j < areasVisiveis[i].equipamentos.length; j++) {
+          total++;
+          if (areasVisiveis[i].equipamentos[j].selecionado) {
+            marcados++;
+          }
+        }
+      }
+
+      check.checked = total > 0 && total === marcados;
+    }
+
+    function limparSelecao() {
+      for (var i = 0; i < areas.length; i++) {
+        for (var j = 0; j < areas[i].equipamentos.length; j++) {
+          areas[i].equipamentos[j].selecionado = false;
+        }
+      }
+
+      atualizarContadorSelecionados();
+      salvarDadosLocais();
+    }
+
+    function atualizarContadorSelecionados() {
+      var areasVisiveis = obterAreasVisiveis();
+      var total = 0;
+
+      for (var i = 0; i < areasVisiveis.length; i++) {
+        for (var j = 0; j < areasVisiveis[i].equipamentos.length; j++) {
+          if (areasVisiveis[i].equipamentos[j].selecionado) {
+            total++;
+          }
+        }
+      }
+
+      var el = document.getElementById("contadorSelecionados");
+      if (el) {
+        el.textContent = total + (total === 1 ? " selecionado" : " selecionados");
       }
     }
 
-    function limparFormulario() {
-      document.getElementById('data').value = dataHoje();
-      document.getElementById('turno').value = '';
-      document.getElementById('mecanico').value = '';
-      document.getElementById('auxiliar').value = '';
-      document.getElementById('equipamento').value = '';
-      document.getElementById('status').value = '✅ - Conforme';
-      document.getElementById('observacao').value = '';
+    function aplicarStatusMassa() {
+      var status = document.getElementById("statusMassa").value;
+      var areasVisiveis = obterAreasVisiveis();
+      var total = 0;
+
+      for (var i = 0; i < areasVisiveis.length; i++) {
+        for (var j = 0; j < areasVisiveis[i].equipamentos.length; j++) {
+          var eq = areasVisiveis[i].equipamentos[j];
+
+          if (eq.selecionado) {
+            eq.status = status;
+            total++;
+          }
+        }
+      }
+
+      if (total === 0) {
+        abrirModal("Atenção", "Nenhum equipamento foi selecionado.");
+        return;
+      }
+
+      renderEquipamentos();
+      salvarDadosLocais();
+      abrirModal("Concluído", "Condição aplicada em " + total + " equipamento(s).");
     }
 
-    window.salvarRelatorio = salvarRelatorio;
-    window.carregarRelatorios = carregarRelatorios;
-    window.limparFormulario = limparFormulario;
+    function gerarRelatorioFinal() {
+      var data = document.getElementById("dataTurno").value;
+      var turno = document.getElementById("turnoTexto").value.trim();
+      var checklist = document.getElementById("checklistTexto").value.trim();
+      var ordens = document.getElementById("ordensTexto").value.trim();
+      var obsGeral = document.getElementById("obsGeral").value.trim();
 
-    testarConexao();
-    carregarRelatorios();
+      var areasVisiveis = obterAreasVisiveis();
+      var linhas = [];
+
+      linhas.push("Relatório de turno - " + obterNomeTipo());
+      linhas.push("");
+
+      if (data) {
+        linhas.push("Data: " + formatarData(data));
+      }
+
+      if (turno) {
+        linhas.push("Turno: " + turno);
+      }
+
+      var agrupado = agruparColaboradores();
+
+      for (var funcao in agrupado) {
+        if (agrupado.hasOwnProperty(funcao)) {
+          linhas.push(funcao + ": " + agrupado[funcao].join(" / "));
+        }
+      }
+
+      linhas.push("");
+      linhas.push("LEGENDA:");
+      linhas.push("✅ - Conforme");
+      linhas.push("❌ - Fora de funcionamento");
+      linhas.push("⚠️ - Em funcionamento com pendência");
+      linhas.push("🚧 - Bloqueado para manutenção");
+      linhas.push("🚨 - Atenção / ocorrência");
+      linhas.push("");
+
+      if (checklist) {
+        linhas.push("CHECK LIST:");
+        adicionarTextoMultilinha(linhas, checklist);
+        linhas.push("");
+      }
+
+      if (ordens) {
+        linhas.push("ORDENS DE SERVIÇO:");
+        adicionarTextoMultilinha(linhas, ordens);
+        linhas.push("");
+      }
+
+      for (var a = 0; a < areasVisiveis.length; a++) {
+        var area = areasVisiveis[a];
+
+        if (!area.observacao && area.equipamentos.length === 0) {
+          continue;
+        }
+
+        linhas.push(area.nome);
+
+        if (area.observacao) {
+          linhas.push(area.observacao);
+        }
+
+        for (var e = 0; e < area.equipamentos.length; e++) {
+          var eq = area.equipamentos[e];
+
+          var temConteudo = eq.status || eq.observacao || eq.pendencia || eq.acao;
+
+          if (!temConteudo) {
+            continue;
+          }
+
+          var linha = "- " + eq.nome;
+
+          if (eq.status) {
+            linha += " " + eq.status;
+          }
+
+          if (eq.observacao) {
+            linha += " " + eq.observacao;
+          }
+
+          linhas.push(linha);
+
+          if (eq.pendencia) {
+            linhas.push("  Pendência: " + eq.pendencia);
+          }
+
+          if (eq.acao) {
+            linhas.push("  Ação realizada: " + eq.acao);
+          }
+        }
+
+        linhas.push("");
+      }
+
+      var pendencias = coletarPendencias(areasVisiveis);
+
+      if (pendencias.length > 0) {
+        linhas.push("PENDÊNCIAS:");
+        for (var p = 0; p < pendencias.length; p++) {
+          linhas.push("🚨 Pendência " + pad2(p + 1) + ": " + pendencias[p]);
+        }
+        linhas.push("");
+      }
+
+      if (obsGeral) {
+        linhas.push("OBSERVAÇÃO GERAL:");
+        adicionarTextoMultilinha(linhas, obsGeral);
+        linhas.push("");
+      }
+
+      linhas.push("Atte.");
+
+      var textoFinal = limparQuebras(linhas.join("\n"));
+
+      document.getElementById("saidaRelatorio").textContent = textoFinal;
+
+      salvarDadosLocais();
+      goStep(4);
+    }
+
+    function agruparColaboradores() {
+      var agrupado = {};
+
+      for (var i = 0; i < colaboradores.length; i++) {
+        var c = colaboradores[i];
+
+        if (!agrupado[c.funcao]) {
+          agrupado[c.funcao] = [];
+        }
+
+        agrupado[c.funcao].push(c.nome);
+      }
+
+      return agrupado;
+    }
+
+    function adicionarTextoMultilinha(linhas, texto) {
+      var partes = texto.split("\n");
+
+      for (var i = 0; i < partes.length; i++) {
+        var linha = partes[i].trim();
+        if (linha) {
+          linhas.push(linha);
+        }
+      }
+    }
+
+    function coletarPendencias(areasBase) {
+      var lista = [];
+
+      for (var a = 0; a < areasBase.length; a++) {
+        var area = areasBase[a];
+
+        for (var e = 0; e < area.equipamentos.length; e++) {
+          var eq = area.equipamentos[e];
+
+          if (eq.pendencia) {
+            lista.push(area.nome + " - " + eq.nome + ": " + eq.pendencia);
+          }
+        }
+      }
+
+      return lista;
+    }
+
+    function copiarRelatorio() {
+      var texto = document.getElementById("saidaRelatorio").textContent;
+
+      if (!texto || texto.indexOf("Clique em") === 0) {
+        abrirModal("Atenção", "Gere o relatório antes de copiar.");
+        return;
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(texto).then(function() {
+          mostrarCopiado();
+        }).catch(function() {
+          copiarFallback(texto);
+        });
+      } else {
+        copiarFallback(texto);
+      }
+    }
+
+    function copiarFallback(texto) {
+      var area = document.createElement("textarea");
+      area.value = texto;
+      area.setAttribute("readonly", "");
+      area.style.position = "fixed";
+      area.style.top = "0";
+      area.style.left = "0";
+      area.style.opacity = "0";
+      document.body.appendChild(area);
+      area.focus();
+      area.select();
+
+      try {
+        document.execCommand("copy");
+        mostrarCopiado();
+      } catch (e) {
+        abrirModal("Copiar manualmente", "No iPhone, caso não copie automático, pressione o texto do relatório, selecione tudo e copie manualmente.");
+      }
+
+      document.body.removeChild(area);
+    }
+
+    function mostrarCopiado() {
+      var msg = document.getElementById("copyMsg");
+      msg.classList.remove("hidden");
+
+      setTimeout(function() {
+        msg.classList.add("hidden");
+      }, 2200);
+    }
+
+    function abrirModal(titulo, texto) {
+      document.getElementById("modalTitle").textContent = titulo;
+      document.getElementById("modalText").textContent = texto;
+      document.getElementById("modalBg").classList.add("open");
+    }
+
+    function fecharModal() {
+      document.getElementById("modalBg").classList.remove("open");
+    }
+
+    function formatarData(valor) {
+      if (!valor) return "";
+
+      var partes = valor.split("-");
+      if (partes.length !== 3) return valor;
+
+      return partes[2] + "/" + partes[1] + "/" + partes[0];
+    }
+
+    function limparQuebras(texto) {
+      while (texto.indexOf("\n\n\n") >= 0) {
+        texto = texto.replace("\n\n\n", "\n\n");
+      }
+
+      return texto.trim();
+    }
+
+    function pad2(num) {
+      return num < 10 ? "0" + num : String(num);
+    }
+
+    function escapeHtml(texto) {
+      return String(texto || "")
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
   </script>
 </body>
 </html>
