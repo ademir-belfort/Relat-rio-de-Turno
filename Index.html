@@ -1,10 +1,136 @@
-<script type="module">
-  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
 
-  const SUPABASE_URL = 'https://atdoqtissihbiqziblde.supabase.co/rest/v1/';
-  const SUPABASE_ANON_KEY = 'sb_publishable_IyeN221wwPMbMoDn39Y9Jw_hrropoUI';
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  <title>Sistema Operacional</title>
 
-  window.supabase = supabase;
-</script>
+  <style>
+    /* COLE AQUI TODO O CSS DO SEU HTML */
+  </style>
+</head>
+
+<body>
+
+  <!-- COLE AQUI TODO O CONTEÚDO VISUAL DO SEU HTML -->
+
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+    const SUPABASE_URL = 'https://atdoqtissihbiqziblde.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_IyeN221wwPMbMoDn39Y9Jw_hrropoUI';
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // =====================================
+    // FUNÇÃO PARA TESTAR CONEXÃO
+    // =====================================
+    async function testarConexao() {
+      const { data, error } = await supabase
+        .from('relatorios')
+        .select('*')
+        .limit(1);
+
+      if (error) {
+        console.error('Erro Supabase:', error);
+        return false;
+      }
+
+      console.log('Conectado ao Supabase:', data);
+      return true;
+    }
+
+    testarConexao();
+
+    // =====================================
+    // FUNÇÃO PARA SALVAR NO BANCO
+    // =====================================
+    async function salvarRelatorio(dados) {
+      const { data, error } = await supabase
+        .from('relatorios')
+        .insert([dados])
+        .select();
+
+      if (error) {
+        console.error('Erro ao salvar:', error);
+        return {
+          sucesso: false,
+          erro: error.message
+        };
+      }
+
+      return {
+        sucesso: true,
+        data
+      };
+    }
+
+    // =====================================
+    // FUNÇÃO PARA BUSCAR RELATÓRIOS
+    // =====================================
+    async function buscarRelatorios() {
+      const { data, error } = await supabase
+        .from('relatorios')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Erro ao buscar:', error);
+        return [];
+      }
+
+      return data;
+    }
+
+    // =====================================
+    // FUNÇÃO PARA ATUALIZAR RELATÓRIO
+    // =====================================
+    async function atualizarRelatorio(id, dados) {
+      const { data, error } = await supabase
+        .from('relatorios')
+        .update(dados)
+        .eq('id', id)
+        .select();
+
+      if (error) {
+        console.error('Erro ao atualizar:', error);
+        return {
+          sucesso: false,
+          erro: error.message
+        };
+      }
+
+      return {
+        sucesso: true,
+        data
+      };
+    }
+
+    // =====================================
+    // FUNÇÃO PARA EXCLUIR RELATÓRIO
+    // =====================================
+    async function excluirRelatorio(id) {
+      const { error } = await supabase
+        .from('relatorios')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        console.error('Erro ao excluir:', error);
+        return false;
+      }
+
+      return true;
+    }
+
+    // Deixar funções disponíveis para os botões do HTML
+    window.salvarRelatorio = salvarRelatorio;
+    window.buscarRelatorios = buscarRelatorios;
+    window.atualizarRelatorio = atualizarRelatorio;
+    window.excluirRelatorio = excluirRelatorio;
+  </script>
+
+</body>
+</html>
