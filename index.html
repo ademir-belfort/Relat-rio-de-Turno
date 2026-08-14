@@ -1,1687 +1,1253 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-
-  <title>Relatório Operacional Mobile</title>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Relatório Operacional - Plantas</title>
   <style>
     :root {
-      --bg: #f3f6fb;
+      --bg: #f3f4f6;
       --card: #ffffff;
-      --primary: #1d4ed8;
-      --primary-dark: #1e3a8a;
-      --green: #16a34a;
-      --red: #dc2626;
-      --yellow: #f59e0b;
-      --orange: #ea580c;
-      --purple: #7c3aed;
-      --dark: #111827;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --warning: #f59e0b;
+      --text: #111827;
       --muted: #6b7280;
-      --border: #dbe3ef;
-      --soft-blue: #dbeafe;
-      --soft-green: #dcfce7;
-      --soft-red: #fee2e2;
-      --soft-yellow: #fef3c7;
-      --soft-orange: #ffedd5;
-      --soft-purple: #ede9fe;
-      --radius: 18px;
-      --shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+      --border: #d1d5db;
+      --soft-blue: #eff6ff;
+      --soft-green: #ecfdf5;
+      --soft-red: #fef2f2;
+      --soft-yellow: #fffbeb;
     }
 
     * {
       box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-      font-family: Arial, Helvetica, sans-serif;
     }
 
     body {
       margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
       background: var(--bg);
-      color: var(--dark);
-      font-size: 15px;
+      color: var(--text);
     }
 
-    button,
-    input,
-    select,
-    textarea {
-      font-size: 16px;
+    header {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: white;
+      padding: 18px;
+      text-align: center;
     }
 
-    .hidden {
-      display: none !important;
-    }
-
-    .app {
-      min-height: 100vh;
-      max-width: 760px;
-      margin: 0 auto;
-      background: var(--bg);
-    }
-
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      background: rgba(243, 246, 251, 0.96);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--border);
-      padding: 14px 14px 10px;
-    }
-
-    .header-main {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .header h1 {
+    header h1 {
       margin: 0;
-      font-size: 20px;
-      line-height: 1.2;
+      font-size: 22px;
     }
 
-    .header small {
-      color: var(--muted);
-      font-weight: bold;
+    header p {
+      margin: 6px 0 0;
+      font-size: 14px;
+      opacity: 0.9;
     }
 
-    .step-tabs {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 7px;
-    }
-
-    .step-tab {
-      border: 1px solid var(--border);
-      background: #fff;
-      color: var(--muted);
-      border-radius: 999px;
-      padding: 9px 4px;
-      font-size: 12px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .step-tab.active {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
-    }
-
-    .content {
-      padding: 14px;
-      padding-bottom: 90px;
-    }
-
-    .step {
-      display: none;
-    }
-
-    .step.active {
-      display: block;
+    main {
+      width: 100%;
+      max-width: 1150px;
+      margin: 0 auto;
+      padding: 16px;
     }
 
     .card {
       background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 15px;
-      box-shadow: var(--shadow);
-      margin-bottom: 14px;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e5e7eb;
     }
 
-    .card-title {
-      font-weight: bold;
-      font-size: 15px;
-      margin-bottom: 10px;
-      color: var(--primary-dark);
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
+    .card h2 {
+      margin-top: 0;
+      font-size: 18px;
+      color: #1f2937;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
     }
 
     label {
-      display: block;
       font-weight: bold;
-      margin-top: 12px;
-      font-size: 14px;
-      color: #334155;
+      font-size: 13px;
+      display: block;
+      margin-bottom: 5px;
     }
 
     input,
     select,
     textarea {
       width: 100%;
-      padding: 12px;
+      padding: 11px;
+      border-radius: 8px;
       border: 1px solid var(--border);
-      border-radius: 14px;
-      background: #fff;
+      font-size: 14px;
       outline: none;
-      margin-top: 6px;
-      color: var(--dark);
-    }
-
-    textarea {
-      min-height: 76px;
-      resize: vertical;
+      background: white;
     }
 
     input:focus,
     select:focus,
     textarea:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
     }
 
-    .btn {
-      width: 100%;
+    textarea {
+      min-height: 70px;
+      resize: vertical;
+    }
+
+    button {
       border: none;
-      border-radius: 14px;
-      padding: 13px 14px;
-      font-weight: bold;
+      border-radius: 8px;
+      padding: 11px 14px;
       cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      opacity: 0.95;
+    }
+
+    .btn-primary {
       background: var(--primary);
-      color: #fff;
-      margin-top: 10px;
-      min-height: 46px;
+      color: white;
     }
 
-    .btn:active {
-      transform: scale(0.99);
+    .btn-success {
+      background: var(--success);
+      color: white;
     }
 
-    .btn-green {
-      background: var(--green);
+    .btn-danger {
+      background: var(--danger);
+      color: white;
     }
 
-    .btn-red {
-      background: var(--red);
+    .btn-warning {
+      background: var(--warning);
+      color: #111827;
     }
 
-    .btn-dark {
-      background: #111827;
+    .btn-muted {
+      background: #e5e7eb;
+      color: #111827;
     }
 
-    .btn-light {
-      background: #fff;
-      color: var(--dark);
-      border: 1px solid var(--border);
+    .btn-full {
+      width: 100%;
     }
 
-    .btn-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 8px;
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
     }
 
-    .hint {
-      background: var(--soft-blue);
-      color: var(--primary-dark);
-      border: 1px solid #bfdbfe;
-      padding: 12px;
-      border-radius: 14px;
-      font-weight: bold;
-      line-height: 1.4;
-      margin-top: 10px;
+    .hidden {
+      display: none !important;
     }
 
-    .warning {
-      background: var(--soft-yellow);
-      color: #92400e;
-      border: 1px solid #fde68a;
-      padding: 12px;
-      border-radius: 14px;
-      font-weight: bold;
-      line-height: 1.4;
-      margin-top: 10px;
+    .login-box {
+      max-width: 420px;
+      margin: 30px auto;
     }
 
-    .success {
-      background: var(--soft-green);
-      color: #166534;
-      border: 1px solid #bbf7d0;
-      padding: 12px;
-      border-radius: 14px;
-      font-weight: bold;
-      line-height: 1.4;
-      margin-top: 10px;
-    }
-
-    .muted {
-      color: var(--muted);
-    }
-
-    .team-item,
-    .area-item {
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 12px;
-      margin-top: 10px;
-      background: #f8fafc;
-    }
-
-    .team-top,
-    .area-top {
+    .user-bar {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      background: #111827;
+      color: white;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+    }
+
+    .user-bar strong {
+      color: #93c5fd;
+    }
+
+    .plant-title {
+      background: #1f2937;
+      color: white;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .plant-title h3 {
+      margin: 0;
+      font-size: 17px;
+    }
+
+    .plant-actions {
+      display: flex;
+      flex-wrap: wrap;
       gap: 8px;
     }
 
-    .team-top strong,
-    .area-top strong {
-      display: block;
-      font-size: 15px;
+    .equipment {
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 10px;
+      background: #ffffff;
     }
 
-    .small-btn {
-      border: none;
-      border-radius: 10px;
-      padding: 8px 10px;
+    .equipment-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .equipment-name {
       font-weight: bold;
-      cursor: pointer;
+      font-size: 16px;
+      color: #111827;
+    }
+
+    .equipment-meta {
+      color: var(--muted);
       font-size: 12px;
+      margin-top: 3px;
+    }
+
+    .status-row {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .status-badge {
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .badge-ok {
+      background: var(--soft-green);
+      color: #166534;
+    }
+
+    .badge-bad {
       background: var(--soft-red);
       color: #991b1b;
-      flex-shrink: 0;
     }
 
-    .small-edit {
+    .badge-pending {
       background: var(--soft-yellow);
       color: #92400e;
     }
 
-    .small-blue {
+    .badge-empty {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .search-box {
       background: var(--soft-blue);
-      color: var(--primary-dark);
-    }
-
-    .equipment-card {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 12px;
-      margin-bottom: 10px;
-      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
-    }
-
-    .equipment-card.selected {
-      border-color: var(--primary);
-      background: #eff6ff;
-    }
-
-    .equipment-main {
-      display: grid;
-      grid-template-columns: 34px 1fr;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .equip-check {
-      width: 24px;
-      height: 24px;
-      margin: 0;
-      cursor: pointer;
-    }
-
-    .equip-name {
-      font-weight: bold;
-      line-height: 1.3;
-    }
-
-    .equip-area {
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 2px;
-      font-weight: normal;
-    }
-
-    .equipment-status {
-      margin-top: 10px;
-    }
-
-    .details-toggle {
-      width: 100%;
-      border: 1px dashed var(--border);
-      background: #f8fafc;
-      color: var(--primary-dark);
+      border: 1px solid #bfdbfe;
+      padding: 14px;
       border-radius: 12px;
-      padding: 10px;
-      font-weight: bold;
-      margin-top: 10px;
-      cursor: pointer;
-      text-align: center;
+      margin-bottom: 16px;
     }
 
-    .details-box {
-      display: none;
-      margin-top: 10px;
-      border-top: 1px solid var(--border);
-      padding-top: 10px;
+    .search-box input {
+      font-size: 16px;
     }
 
-    .details-box.open {
-      display: block;
-    }
-
-    .mass-box {
-      position: sticky;
-      top: 95px;
-      z-index: 15;
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      box-shadow: var(--shadow);
-      padding: 12px;
-      margin-bottom: 14px;
-    }
-
-    .select-all-line {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .select-all-line input {
-      width: 24px;
-      height: 24px;
-      margin: 0;
-      flex-shrink: 0;
-    }
-
-    .counter {
-      display: inline-block;
-      background: var(--soft-purple);
-      color: #5b21b6;
-      border-radius: 999px;
-      padding: 7px 10px;
+    .search-info {
       font-size: 13px;
-      font-weight: bold;
+      color: #1e40af;
       margin-top: 8px;
     }
 
-    .area-title {
-      font-size: 17px;
-      font-weight: bold;
-      color: #0f172a;
-      margin: 18px 0 10px;
-      padding-left: 4px;
-      border-left: 5px solid var(--primary);
-    }
-
-    .area-note {
-      margin: -4px 0 10px;
-      color: var(--muted);
-      font-size: 13px;
-      padding-left: 10px;
-    }
-
-    .output {
-      background: #0f172a;
-      color: #e5e7eb;
-      padding: 14px;
-      border-radius: 16px;
+    .report-output {
       white-space: pre-wrap;
-      min-height: 300px;
-      font-family: Consolas, monospace;
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 14px;
+      border-radius: 10px;
+      min-height: 220px;
+      font-family: Arial, Helvetica, sans-serif;
       line-height: 1.5;
-      font-size: 14px;
       overflow-x: auto;
     }
 
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      max-width: 760px;
-      margin: 0 auto;
-      background: rgba(255, 255, 255, 0.96);
-      backdrop-filter: blur(8px);
-      border-top: 1px solid var(--border);
-      padding: 10px 14px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      z-index: 30;
+    .table-wrap {
+      overflow-x: auto;
     }
 
-    .bottom-nav .btn {
-      margin-top: 0;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
     }
 
-    .summary-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+    th,
+    td {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background: #f9fafb;
+    }
+
+    .small {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .notice {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #92400e;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 13px;
       margin-top: 10px;
     }
 
-    .summary-card {
-      background: #f8fafc;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 12px;
-    }
-
-    .summary-card strong {
-      display: block;
-      font-size: 22px;
-      margin-bottom: 2px;
-    }
-
-    .pill {
-      display: inline-block;
-      border-radius: 999px;
-      padding: 7px 10px;
-      font-size: 12px;
-      font-weight: bold;
-      margin-top: 8px;
-    }
-
-    .pill-blue {
-      background: var(--soft-blue);
-      color: var(--primary-dark);
-    }
-
-    .pill-green {
-      background: var(--soft-green);
-      color: #166534;
-    }
-
-    .pill-orange {
-      background: var(--soft-orange);
-      color: #9a3412;
-    }
-
-    .modal-bg {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.55);
-      z-index: 50;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .modal-bg.open {
-      display: flex;
-    }
-
-    .modal {
-      width: 100%;
-      max-width: 420px;
-      background: #fff;
-      border-radius: 22px;
-      padding: 18px;
-      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.25);
-    }
-
-    .modal h3 {
-      margin: 0 0 10px;
-    }
-
-    .modal p {
-      color: var(--muted);
-      line-height: 1.4;
-    }
-
-    @media (max-width: 420px) {
-      .step-tabs {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .mass-box {
-        top: 135px;
-      }
-
-      .summary-grid {
+    @media (max-width: 760px) {
+      .grid,
+      .grid-2 {
         grid-template-columns: 1fr;
       }
 
-      .btn-row {
+      .status-row {
         grid-template-columns: 1fr;
+      }
+
+      header h1 {
+        font-size: 19px;
+      }
+
+      main {
+        padding: 10px;
+      }
+
+      .plant-title {
+        align-items: flex-start;
+      }
+
+      .plant-actions button {
+        width: 100%;
+      }
+
+      .plant-actions {
+        width: 100%;
+      }
+
+      .actions button {
+        width: 100%;
       }
     }
   </style>
 </head>
-
 <body>
-  <div class="app">
+  <header>
+    <h1>Relatório Operacional</h1>
+    <p>Controle por planta, equipamento e status para envio no WhatsApp</p>
+  </header>
 
-    <header class="header">
-      <div class="header-main">
+  <main>
+    <!-- LOGIN -->
+    <section id="loginSection" class="card login-box">
+      <h2>Entrar no Sistema</h2>
+
+      <div class="notice">
+        Acesso inicial padrão:<br />
+        Usuário: <strong>admin</strong><br />
+        Senha: <strong>1234</strong>
+      </div>
+
+      <div style="margin-top: 12px;">
+        <label for="loginUser">Usuário</label>
+        <input id="loginUser" type="text" placeholder="Digite seu usuário" />
+      </div>
+
+      <div style="margin-top: 12px;">
+        <label for="loginPass">Senha</label>
+        <input id="loginPass" type="password" placeholder="Digite sua senha" />
+      </div>
+
+      <div class="actions">
+        <button class="btn-primary btn-full" onclick="login()">Entrar</button>
+      </div>
+
+      <p id="loginError" class="small" style="color:#dc2626; display:none;">
+        Usuário ou senha inválidos.
+      </p>
+    </section>
+
+    <!-- APP -->
+    <section id="appSection" class="hidden">
+      <div class="user-bar">
         <div>
-          <h1>Relatório Operacional</h1>
-          <small id="headerSub">Fluxo simples para celular</small>
+          Usuário logado:
+          <strong id="loggedUserName"></strong>
+          |
+          Perfil:
+          <strong id="loggedUserRole"></strong>
         </div>
-        <span class="pill pill-blue" id="currentTypePill">Mecânica</span>
+        <button class="btn-danger" onclick="logout()">Sair</button>
       </div>
 
-      <div class="step-tabs">
-        <button class="step-tab active" onclick="goStep(1)">1. Turno</button>
-        <button class="step-tab" onclick="goStep(2)">2. Tipo</button>
-        <button class="step-tab" onclick="goStep(3)">3. Preencher</button>
-        <button class="step-tab" onclick="goStep(4)">4. Relatório</button>
-      </div>
-    </header>
+      <!-- ADMIN - USUÁRIOS -->
+      <section id="userAdminCard" class="card hidden">
+        <h2>Criar Usuário</h2>
 
-    <main class="content">
-
-      <!-- ETAPA 1 -->
-      <section id="step1" class="step active">
-        <div class="card">
-          <div class="card-title">Dados do turno</div>
-
-          <label>Data</label>
-          <input id="dataTurno" type="date">
-
-          <label>Turno</label>
-          <input id="turnoTexto" type="text" value="A: 07:30 até as 16:00">
-
-          <label>Check list</label>
-          <textarea id="checklistTexto" placeholder="Ex: ✅ 016003"></textarea>
-
-          <label>Ordens de serviço</label>
-          <textarea id="ordensTexto" placeholder="Ex: ✅ 011229&#10;✅ 013214&#10;✅ 011626"></textarea>
-
-          <label>Observação geral do turno</label>
-          <textarea id="obsGeral" placeholder="Ex: Limpeza dos compressores 01 e 02 realizada."></textarea>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Equipe</div>
-
-          <label>Nome</label>
-          <input id="novoColaboradorNome" type="text" placeholder="Ex: Geilton">
-
-          <label>Função</label>
-          <select id="novoColaboradorFuncao">
-            <option>Mecânico</option>
-            <option>Auxiliar mecânico</option>
-            <option>Eletricista</option>
-            <option>Auxiliar</option>
-            <option>Operador</option>
-            <option>Líder</option>
-            <option>Outro</option>
-          </select>
-
-          <button class="btn btn-green" onclick="adicionarColaborador()">Adicionar na equipe</button>
-
-          <div id="listaColaboradores"></div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Dados salvos neste aparelho</div>
-          <div class="hint">
-            O sistema salva automaticamente os dados neste navegador para não perder o preenchimento ao atualizar a página.
+        <div class="grid">
+          <div>
+            <label for="newUserName">Nome do usuário</label>
+            <input id="newUserName" type="text" placeholder="Ex: João Operador" />
           </div>
-          <button class="btn btn-red" onclick="limparDadosLocais()">Limpar dados salvos</button>
+
+          <div>
+            <label for="newUserLogin">Login</label>
+            <input id="newUserLogin" type="text" placeholder="Ex: joao" />
+          </div>
+
+          <div>
+            <label for="newUserPass">Senha</label>
+            <input id="newUserPass" type="text" placeholder="Ex: 1234" />
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-top:12px;">
+          <div>
+            <label for="newUserRole">Tipo de acesso</label>
+            <select id="newUserRole">
+              <option value="Administrador">Administrador</option>
+              <option value="Operador">Operador</option>
+              <option value="Visualizador">Visualizador</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="newUserSector">Setor / Função</label>
+            <input id="newUserSector" type="text" placeholder="Ex: Operacional" />
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn-success" onclick="createUser()">Criar usuário</button>
+        </div>
+
+        <h3>Usuários cadastrados</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Login</th>
+                <th>Perfil</th>
+                <th>Setor</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody"></tbody>
+          </table>
         </div>
       </section>
 
-      <!-- ETAPA 2 -->
-      <section id="step2" class="step">
-        <div class="card">
-          <div class="card-title">Tipo de relatório</div>
+      <!-- DADOS DO RELATÓRIO -->
+      <section class="card">
+        <h2>Dados do Relatório</h2>
 
-          <label>Escolha o relatório</label>
-          <select id="tipoRelatorio" onchange="alterarTipoRelatorio(this.value)">
-            <option value="mecanica">Mecânica</option>
-            <option value="inflaveis">Infláveis</option>
-            <option value="eletrica">Elétrica</option>
-          </select>
-
-          <div class="hint" id="tipoInfo">
-            Mecânica: mostra todos os equipamentos, exceto infláveis.
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Resumo</div>
-
-          <div class="summary-grid">
-            <div class="summary-card">
-              <strong id="totalAreas">0</strong>
-              <span>Áreas visíveis</span>
-            </div>
-
-            <div class="summary-card">
-              <strong id="totalEquipamentos">0</strong>
-              <span>Equipamentos visíveis</span>
-            </div>
+        <div class="grid">
+          <div>
+            <label for="reportDate">Data</label>
+            <input id="reportDate" type="date" />
           </div>
 
-          <div class="warning">
-            Mecânica não mostra infláveis. Infláveis mostra somente infláveis. Elétrica mostra tudo.
+          <div>
+            <label for="reportShift">Turno</label>
+            <input id="reportShift" type="text" value="07:30 às 16:00" />
+          </div>
+
+          <div>
+            <label for="reportOperator">Operador / Responsável</label>
+            <input id="reportOperator" type="text" placeholder="Nome do operador" />
           </div>
         </div>
       </section>
 
-      <!-- ETAPA 3 -->
-      <section id="step3" class="step">
-
-        <div class="mass-box">
-          <label class="select-all-line">
-            <input id="selectAllVisible" type="checkbox" onchange="toggleSelecionarTodos()">
-            <span>Selecionar todos visíveis</span>
-          </label>
-
-          <label>Aplicar condição</label>
-          <select id="statusMassa">
-            <option value="✅">✅ Conforme</option>
-            <option value="❌">❌ Fora de funcionamento</option>
-            <option value="⚠️">⚠️ Em funcionamento com pendência</option>
-            <option value="🚧">🚧 Bloqueado para manutenção</option>
-            <option value="🚨">🚨 Atenção / ocorrência</option>
-            <option value="">Limpar status</option>
-          </select>
-
-          <button class="btn btn-green" onclick="aplicarStatusMassa()">Aplicar nos selecionados</button>
-
-          <span class="counter" id="contadorSelecionados">0 selecionados</span>
-        </div>
-
-        <div id="listaEquipamentos"></div>
-      </section>
-
-      <!-- ETAPA 4 -->
-      <section id="step4" class="step">
-        <div class="card">
-          <div class="card-title">Relatório final</div>
-
-          <button class="btn btn-green" onclick="gerarRelatorioFinal()">Gerar relatório</button>
-          <button class="btn btn-dark" onclick="copiarRelatorio()">Copiar relatório</button>
-
-          <div id="copyMsg" class="success hidden">
-            Relatório copiado. Se estiver no iPhone e não copiar, selecione o texto manualmente.
-          </div>
-        </div>
-
-        <div class="card">
-          <div id="saidaRelatorio" class="output">Clique em "Gerar relatório".</div>
+      <!-- BUSCA -->
+      <section class="search-box">
+        <label for="equipmentSearch">Buscar equipamento</label>
+        <input
+          id="equipmentSearch"
+          type="text"
+          placeholder="Digite o nome, planta ou categoria. Ex: Inflável 01, Inflador, Planta 01..."
+          oninput="renderEquipments()"
+        />
+        <div class="search-info" id="searchInfo">
+          Digite para localizar rapidamente o equipamento que deseja relatar.
         </div>
       </section>
 
-    </main>
+      <!-- EQUIPAMENTOS -->
+      <section id="equipmentContainer"></section>
 
-    <div class="bottom-nav">
-      <button id="prevBtn" class="btn btn-light" onclick="voltarStep()">Voltar</button>
-      <button id="nextBtn" class="btn" onclick="avancarStep()">Avançar</button>
-    </div>
-  </div>
+      <!-- AÇÕES -->
+      <section class="card">
+        <h2>Gerar Relatório para WhatsApp</h2>
 
-  <!-- MODAL SIMPLES -->
-  <div id="modalBg" class="modal-bg">
-    <div class="modal">
-      <h3 id="modalTitle">Aviso</h3>
-      <p id="modalText">Mensagem</p>
-      <button class="btn" onclick="fecharModal()">Entendi</button>
-    </div>
-  </div>
+        <div class="actions">
+          <button class="btn-primary" onclick="generateReport()">Gerar relatório</button>
+          <button class="btn-success" onclick="copyReport()">Copiar para WhatsApp</button>
+          <button class="btn-warning" onclick="saveLocalReport()">Salvar no navegador</button>
+          <button class="btn-muted" onclick="clearAll()">Limpar tudo</button>
+        </div>
+
+        <div class="notice">
+          No WhatsApp, os nomes dos equipamentos sairão em negrito usando o padrão:
+          <strong>*NOME DO EQUIPAMENTO*</strong>
+        </div>
+
+        <h3>Prévia do texto</h3>
+        <div id="reportOutput" class="report-output">
+O relatório gerado aparecerá aqui.
+        </div>
+      </section>
+
+      <!-- HISTÓRICO -->
+      <section class="card">
+        <h2>Histórico salvo no navegador</h2>
+        <div class="actions">
+          <button class="btn-muted" onclick="renderHistory()">Atualizar histórico</button>
+          <button class="btn-danger" onclick="clearHistory()">Apagar histórico</button>
+        </div>
+        <div id="historyContainer" class="small"></div>
+      </section>
+    </section>
+  </main>
 
   <script>
-    var stepAtual = 1;
-    var tipoRelatorioAtual = "mecanica";
-    var STORAGE_KEY = "relatorio_operacional_mobile_v1";
+    const STORAGE_USERS = "relatorio_operacional_usuarios";
+    const STORAGE_REPORTS = "relatorio_operacional_historico";
+    const STORAGE_STATE = "relatorio_operacional_estado";
 
-    var colaboradores = [
-      { nome: "Geilton", funcao: "Mecânico" },
-      { nome: "Wagner", funcao: "Eletricista" },
-      { nome: "José Erbete", funcao: "Auxiliar mecânico" }
-    ];
+    let currentUser = null;
 
-    var areas = [
+    const defaultUsers = [
       {
-        id: gerarId(),
-        nome: "PLANTA 01",
-        observacao: "Bloqueada para manutenção 🚧",
-        equipamentos: [
-          criarEquipamento("ELEVADOR 01"),
-          criarEquipamento("PENEIRA 01"),
-          criarEquipamento("DESIGNADOR"),
-          criarEquipamento("MISTURADOR"),
-          criarEquipamento("ELEVADOR 02"),
-          criarEquipamento("PENEIRA 02"),
-          criarEquipamento("POSICIONADOR 01"),
-          criarEquipamento("POSICIONADOR 02"),
-          criarEquipamento("SOPRADOR")
-        ]
-      },
-      {
-        id: gerarId(),
-        nome: "PLANTA 02",
-        observacao: "",
-        equipamentos: [
-          criarEquipamento("ELEVADOR 01", "✅", "Teve desarme no horário de 08:45. Equipe identificou rolamento danificado sentido BR. Foi realizada a substituição e liberado para produção às 10:40."),
-          criarEquipamento("PENEIRA 01", "✅"),
-          criarEquipamento("DESIGNADOR", "✅"),
-          criarEquipamento("MISTURADOR", "⚠️", "Paradas constantes. Cilindros encontravam-se com reparos danificados, ocasionando perda constante de ar e atraso na abertura da mandíbula."),
-          criarEquipamento("ELEVADOR 02", "✅"),
-          criarEquipamento("PENEIRA 02", "✅"),
-          criarEquipamento("POSICIONADOR 01", "✅"),
-          criarEquipamento("POSICIONADOR 02", "✅")
-        ]
-      },
-      {
-        id: gerarId(),
-        nome: "PLANTA 03",
-        observacao: "",
-        equipamentos: [
-          criarEquipamento("ELEVADOR 01", "✅"),
-          criarEquipamento("PENEIRA 01", "✅"),
-          criarEquipamento("SOPRADOR", "✅"),
-          criarEquipamento("POSICIONADOR 01", "✅"),
-          criarEquipamento("POSICIONADOR 02", "✅"),
-          criarEquipamento("MOINHO", "✅", "Realizada a substituição da tampa de visita que estava danificada.")
-        ]
-      },
-      {
-        id: gerarId(),
-        nome: "PLANTA 04",
-        observacao: "",
-        equipamentos: [
-          criarEquipamento("ELEVADOR", "✅"),
-          criarEquipamento("PENEIRA", "✅"),
-          criarEquipamento("MOINHO", "✅"),
-          criarEquipamento("CT01", "✅", "Solda de suporte realizada."),
-          criarEquipamento("CT02", "✅"),
-          criarEquipamento("CT03", "✅"),
-          criarEquipamento("POSICIONADOR 01", "✅"),
-          criarEquipamento("POSICIONADOR 02", "✅")
-        ]
-      },
-      {
-        id: gerarId(),
-        nome: "DESCARGA",
-        observacao: "",
-        equipamentos: [
-          criarEquipamento("CT01", "🚧"),
-          criarEquipamento("CT02", "🚧"),
-          criarEquipamento("CT03", "🚧")
-        ]
-      },
-      {
-        id: gerarId(),
-        nome: "ENSACADEIRA",
-        observacao: "Sem operação",
-        equipamentos: []
-      },
-      {
-        id: gerarId(),
-        nome: "INFLÁVEL 01",
-        observacao: "",
-        equipamentos: [
-          criarEquipamento("INSUFLADOR 01", "✅"),
-          criarEquipamento("INSUFLADOR 02", "✅")
-        ]
-      },
-      {
-        id: gerarId(),
-        nome: "INFLÁVEL 03",
-        observacao: "",
-        equipamentos: [
-          criarEquipamento("INSUFLADOR 01", "✅"),
-          criarEquipamento("INSUFLADOR 02", "✅")
-        ]
-      },
-      {
-        id: gerarId(),
-        nome: "INFLÁVEL 04",
-        observacao: "",
-        equipamentos: [
-          criarEquipamento("INSUFLADOR 01", "✅"),
-          criarEquipamento("INSUFLADOR 02", "✅")
-        ]
-      },
-      {
-        id: gerarId(),
-        nome: "INFLÁVEL 05",
-        observacao: "",
-        equipamentos: [
-          criarEquipamento("INSUFLADOR 01", "✅"),
-          criarEquipamento("INSUFLADOR 02", "✅")
-        ]
-      },
-      {
-        id: gerarId(),
-        nome: "INFLÁVEL 06",
-        observacao: "",
-        equipamentos: [
-          criarEquipamento("INSUFLADOR 01", "✅"),
-          criarEquipamento("INSUFLADOR 02", "✅")
-        ]
-      },
-      {
-        id: gerarId(),
-        nome: "INFLÁVEL 07",
-        observacao: "",
-        equipamentos: [
-          criarEquipamento("INSUFLADOR 01", "✅"),
-          criarEquipamento("INSUFLADOR 02", "✅")
-        ]
-      },
-      {
-        id: gerarId(),
-        nome: "INFLÁVEL 08",
-        observacao: "",
-        equipamentos: [
-          criarEquipamento("INSUFLADOR 01", "✅"),
-          criarEquipamento("INSUFLADOR 02", "✅")
-        ]
-      },
-      {
-        id: gerarId(),
-        nome: "INFLÁVEL 09",
-        observacao: "",
-        equipamentos: [
-          criarEquipamento("INSUFLADOR 01", "✅"),
-          criarEquipamento("INSUFLADOR 02", "✅")
-        ]
-      },
-      {
-        id: gerarId(),
-        nome: "INFLÁVEL 10",
-        observacao: "",
-        equipamentos: [
-          criarEquipamento("INSUFLADOR 01", "✅"),
-          criarEquipamento("INSUFLADOR 02", "✅")
-        ]
+        name: "Administrador",
+        login: "admin",
+        password: "1234",
+        role: "Administrador",
+        sector: "Administração"
       }
     ];
 
-    iniciar();
-
-    function iniciar() {
-      var hoje = new Date();
-      var dataInput = document.getElementById("dataTurno");
-
-      if (dataInput && !dataInput.value) {
-        dataInput.value = hoje.toISOString().split("T")[0];
+    const equipments = [
+      {
+        id: "p1-inflavel-01",
+        plant: "Planta 01",
+        category: "Inflável",
+        name: "INFLÁVEL 01"
+      },
+      {
+        id: "p1-inflavel-02",
+        plant: "Planta 01",
+        category: "Inflável",
+        name: "INFLÁVEL 02"
+      },
+      {
+        id: "p1-inflavel-03",
+        plant: "Planta 01",
+        category: "Inflável",
+        name: "INFLÁVEL 03"
+      },
+      {
+        id: "p1-inflador-01",
+        plant: "Planta 01",
+        category: "Inflador",
+        name: "INFLADOR 01"
+      },
+      {
+        id: "p1-inflador-02",
+        plant: "Planta 01",
+        category: "Inflador",
+        name: "INFLADOR 02"
+      },
+      {
+        id: "p1-motor-01",
+        plant: "Planta 01",
+        category: "Motor",
+        name: "MOTOR 01"
+      },
+      {
+        id: "p1-painel-01",
+        plant: "Planta 01",
+        category: "Painel",
+        name: "PAINEL 01"
+      },
+      {
+        id: "p2-inflavel-04",
+        plant: "Planta 02",
+        category: "Inflável",
+        name: "INFLÁVEL 04"
+      },
+      {
+        id: "p2-inflavel-05",
+        plant: "Planta 02",
+        category: "Inflável",
+        name: "INFLÁVEL 05"
+      },
+      {
+        id: "p2-inflador-03",
+        plant: "Planta 02",
+        category: "Inflador",
+        name: "INFLADOR 03"
+      },
+      {
+        id: "p2-inflador-04",
+        plant: "Planta 02",
+        category: "Inflador",
+        name: "INFLADOR 04"
+      },
+      {
+        id: "p2-motor-02",
+        plant: "Planta 02",
+        category: "Motor",
+        name: "MOTOR 02"
+      },
+      {
+        id: "p2-painel-02",
+        plant: "Planta 02",
+        category: "Painel",
+        name: "PAINEL 02"
       }
+    ];
 
-      carregarDadosLocais();
+    let state = {};
 
-      renderColaboradores();
-      renderEquipamentos();
-      atualizarResumoTipo();
-      atualizarBotoes();
-      configurarAutoSalvar();
+    function init() {
+      ensureDefaultUsers();
+      loadState();
+
+      const today = new Date().toISOString().split("T")[0];
+      document.getElementById("reportDate").value = today;
+
+      renderHistory();
     }
 
-    function configurarAutoSalvar() {
-      var ids = ["dataTurno", "turnoTexto", "checklistTexto", "ordensTexto", "obsGeral", "tipoRelatorio"];
+    function ensureDefaultUsers() {
+      const saved = localStorage.getItem(STORAGE_USERS);
 
-      for (var i = 0; i < ids.length; i++) {
-        var el = document.getElementById(ids[i]);
-        if (el) {
-          el.addEventListener("input", salvarDadosLocais);
-          el.addEventListener("change", salvarDadosLocais);
-        }
-      }
-
-      window.addEventListener("beforeunload", salvarDadosLocais);
-    }
-
-    function salvarDadosLocais() {
-      try {
-        var dados = {
-          dataTurno: valorElemento("dataTurno"),
-          turnoTexto: valorElemento("turnoTexto"),
-          checklistTexto: valorElemento("checklistTexto"),
-          ordensTexto: valorElemento("ordensTexto"),
-          obsGeral: valorElemento("obsGeral"),
-          tipoRelatorioAtual: tipoRelatorioAtual,
-          colaboradores: colaboradores,
-          areas: areas
-        };
-
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
-      } catch (e) {
-        console.log("Não foi possível salvar localmente:", e);
-      }
-    }
-
-    function carregarDadosLocais() {
-      try {
-        var bruto = localStorage.getItem(STORAGE_KEY);
-        if (!bruto) return;
-
-        var dados = JSON.parse(bruto);
-
-        if (dados.dataTurno) document.getElementById("dataTurno").value = dados.dataTurno;
-        if (dados.turnoTexto !== undefined) document.getElementById("turnoTexto").value = dados.turnoTexto;
-        if (dados.checklistTexto !== undefined) document.getElementById("checklistTexto").value = dados.checklistTexto;
-        if (dados.ordensTexto !== undefined) document.getElementById("ordensTexto").value = dados.ordensTexto;
-        if (dados.obsGeral !== undefined) document.getElementById("obsGeral").value = dados.obsGeral;
-
-        if (dados.tipoRelatorioAtual) {
-          tipoRelatorioAtual = dados.tipoRelatorioAtual;
-          document.getElementById("tipoRelatorio").value = tipoRelatorioAtual;
-        }
-
-        if (Array.isArray(dados.colaboradores)) {
-          colaboradores = dados.colaboradores;
-        }
-
-        if (Array.isArray(dados.areas)) {
-          areas = dados.areas;
-        }
-      } catch (e) {
-        console.log("Não foi possível carregar dados locais:", e);
-      }
-    }
-
-    function limparDadosLocais() {
-      try {
-        localStorage.removeItem(STORAGE_KEY);
-      } catch (e) {
-        console.log("Erro ao limpar dados:", e);
-      }
-
-      abrirModal("Concluído", "Dados salvos neste aparelho foram limpos. Atualize a página para voltar ao modelo inicial.");
-    }
-
-    function valorElemento(id) {
-      var el = document.getElementById(id);
-      return el ? el.value : "";
-    }
-
-    function gerarId() {
-      return Math.random().toString(36).substring(2, 10) + String(new Date().getTime());
-    }
-
-    function criarEquipamento(nome, status, observacao, pendencia, acao) {
-      return {
-        id: gerarId(),
-        nome: nome || "",
-        status: status || "",
-        observacao: observacao || "",
-        pendencia: pendencia || "",
-        acao: acao || "",
-        selecionado: false,
-        detalheAberto: false
-      };
-    }
-
-    function goStep(numero) {
-      stepAtual = numero;
-
-      var steps = document.querySelectorAll(".step");
-      for (var i = 0; i < steps.length; i++) {
-        steps[i].classList.remove("active");
-      }
-
-      document.getElementById("step" + numero).classList.add("active");
-
-      var tabs = document.querySelectorAll(".step-tab");
-      for (var j = 0; j < tabs.length; j++) {
-        tabs[j].classList.remove("active");
-      }
-
-      tabs[numero - 1].classList.add("active");
-
-      atualizarBotoes();
-
-      window.scrollTo(0, 0);
-    }
-
-    function avancarStep() {
-      if (stepAtual < 4) {
-        goStep(stepAtual + 1);
-      } else {
-        gerarRelatorioFinal();
+      if (!saved) {
+        localStorage.setItem(STORAGE_USERS, JSON.stringify(defaultUsers));
       }
     }
 
-    function voltarStep() {
-      if (stepAtual > 1) {
-        goStep(stepAtual - 1);
-      }
+    function getUsers() {
+      return JSON.parse(localStorage.getItem(STORAGE_USERS) || "[]");
     }
 
-    function atualizarBotoes() {
-      var prev = document.getElementById("prevBtn");
-      var next = document.getElementById("nextBtn");
-
-      if (stepAtual === 1) {
-        prev.disabled = true;
-        prev.style.opacity = "0.5";
-      } else {
-        prev.disabled = false;
-        prev.style.opacity = "1";
-      }
-
-      if (stepAtual === 4) {
-        next.textContent = "Gerar";
-      } else {
-        next.textContent = "Avançar";
-      }
+    function setUsers(users) {
+      localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
     }
 
-    function alterarTipoRelatorio(tipo) {
-      tipoRelatorioAtual = tipo;
-      document.getElementById("tipoRelatorio").value = tipo;
+    function login() {
+      const loginValue = document.getElementById("loginUser").value.trim();
+      const passValue = document.getElementById("loginPass").value.trim();
+      const users = getUsers();
 
-      limparSelecao();
-      renderEquipamentos();
-      atualizarResumoTipo();
-      salvarDadosLocais();
-    }
+      const found = users.find(
+        user => user.login === loginValue && user.password === passValue
+      );
 
-    function obterNomeTipo() {
-      if (tipoRelatorioAtual === "mecanica") return "Mecânica";
-      if (tipoRelatorioAtual === "inflaveis") return "Infláveis";
-      if (tipoRelatorioAtual === "eletrica") return "Elétrica";
-      return "Mecânica";
-    }
-
-    function atualizarResumoTipo() {
-      document.getElementById("currentTypePill").textContent = obterNomeTipo();
-
-      var info = "";
-      if (tipoRelatorioAtual === "mecanica") {
-        info = "Mecânica: mostra todos os equipamentos, exceto infláveis.";
-      } else if (tipoRelatorioAtual === "inflaveis") {
-        info = "Infláveis: mostra somente equipamentos de infláveis.";
-      } else {
-        info = "Elétrica: mostra todos os equipamentos cadastrados.";
-      }
-
-      document.getElementById("tipoInfo").textContent = info;
-
-      var areasVisiveis = obterAreasVisiveis();
-      var totalEq = 0;
-
-      for (var i = 0; i < areasVisiveis.length; i++) {
-        totalEq += areasVisiveis[i].equipamentos.length;
-      }
-
-      document.getElementById("totalAreas").textContent = areasVisiveis.length;
-      document.getElementById("totalEquipamentos").textContent = totalEq;
-    }
-
-    function normalizarTexto(texto) {
-      return String(texto || "")
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toUpperCase();
-    }
-
-    function areaEhInflavel(area) {
-      return normalizarTexto(area.nome).indexOf("INFLAVEL") >= 0;
-    }
-
-    function obterAreasVisiveis() {
-      var filtradas = [];
-
-      for (var i = 0; i < areas.length; i++) {
-        var area = areas[i];
-
-        if (tipoRelatorioAtual === "mecanica" && !areaEhInflavel(area)) {
-          filtradas.push(area);
-        }
-
-        if (tipoRelatorioAtual === "inflaveis" && areaEhInflavel(area)) {
-          filtradas.push(area);
-        }
-
-        if (tipoRelatorioAtual === "eletrica") {
-          filtradas.push(area);
-        }
-      }
-
-      return filtradas;
-    }
-
-    function adicionarColaborador() {
-      var nome = document.getElementById("novoColaboradorNome").value.trim();
-      var funcao = document.getElementById("novoColaboradorFuncao").value;
-
-      if (!nome) {
-        abrirModal("Atenção", "Digite o nome do colaborador.");
+      if (!found) {
+        document.getElementById("loginError").style.display = "block";
         return;
       }
 
-      colaboradores.push({
-        nome: nome,
-        funcao: funcao
+      currentUser = found;
+
+      document.getElementById("loginError").style.display = "none";
+      document.getElementById("loginSection").classList.add("hidden");
+      document.getElementById("appSection").classList.remove("hidden");
+
+      document.getElementById("loggedUserName").textContent = currentUser.name;
+      document.getElementById("loggedUserRole").textContent = currentUser.role;
+      document.getElementById("reportOperator").value = currentUser.name;
+
+      if (currentUser.role === "Administrador") {
+        document.getElementById("userAdminCard").classList.remove("hidden");
+      } else {
+        document.getElementById("userAdminCard").classList.add("hidden");
+      }
+
+      renderUsers();
+      renderEquipments();
+      applyPermissions();
+    }
+
+    function logout() {
+      currentUser = null;
+      document.getElementById("appSection").classList.add("hidden");
+      document.getElementById("loginSection").classList.remove("hidden");
+      document.getElementById("loginUser").value = "";
+      document.getElementById("loginPass").value = "";
+    }
+
+    function createUser() {
+      if (!isAdmin()) {
+        showMessage("Apenas administrador pode criar usuário.");
+        return;
+      }
+
+      const name = document.getElementById("newUserName").value.trim();
+      const login = document.getElementById("newUserLogin").value.trim();
+      const password = document.getElementById("newUserPass").value.trim();
+      const role = document.getElementById("newUserRole").value;
+      const sector = document.getElementById("newUserSector").value.trim();
+
+      if (!name || !login || !password) {
+        showMessage("Preencha nome, login e senha do usuário.");
+        return;
+      }
+
+      const users = getUsers();
+
+      if (users.some(user => user.login === login)) {
+        showMessage("Já existe usuário com esse login.");
+        return;
+      }
+
+      users.push({
+        name,
+        login,
+        password,
+        role,
+        sector
       });
 
-      document.getElementById("novoColaboradorNome").value = "";
-      renderColaboradores();
-      salvarDadosLocais();
+      setUsers(users);
+
+      document.getElementById("newUserName").value = "";
+      document.getElementById("newUserLogin").value = "";
+      document.getElementById("newUserPass").value = "";
+      document.getElementById("newUserSector").value = "";
+
+      renderUsers();
+      showMessage("Usuário criado com sucesso.");
     }
 
-    function removerColaborador(index) {
-      colaboradores.splice(index, 1);
-      renderColaboradores();
-      salvarDadosLocais();
-    }
-
-    function renderColaboradores() {
-      var box = document.getElementById("listaColaboradores");
-      box.innerHTML = "";
-
-      if (colaboradores.length === 0) {
-        box.innerHTML = '<div class="warning">Nenhum colaborador informado.</div>';
+    function deleteUser(login) {
+      if (!isAdmin()) {
+        showMessage("Apenas administrador pode excluir usuário.");
         return;
       }
 
-      for (var i = 0; i < colaboradores.length; i++) {
-        var c = colaboradores[i];
-
-        var div = document.createElement("div");
-        div.className = "team-item";
-
-        div.innerHTML =
-          '<div class="team-top">' +
-            '<div>' +
-              '<strong>' + escapeHtml(c.funcao) + '</strong>' +
-              '<span class="muted">' + escapeHtml(c.nome) + '</span>' +
-            '</div>' +
-            '<button class="small-btn" onclick="removerColaborador(' + i + ')">Excluir</button>' +
-          '</div>';
-
-        box.appendChild(div);
-      }
-    }
-
-    function renderEquipamentos() {
-      var box = document.getElementById("listaEquipamentos");
-      box.innerHTML = "";
-
-      var areasVisiveis = obterAreasVisiveis();
-
-      if (areasVisiveis.length === 0) {
-        box.innerHTML = '<div class="warning">Nenhum equipamento encontrado para este tipo de relatório.</div>';
-        atualizarContadorSelecionados();
+      if (login === "admin") {
+        showMessage("O usuário admin padrão não pode ser excluído.");
         return;
       }
 
-      for (var a = 0; a < areasVisiveis.length; a++) {
-        var area = areasVisiveis[a];
-
-        var title = document.createElement("div");
-        title.className = "area-title";
-        title.textContent = area.nome;
-        box.appendChild(title);
-
-        if (area.observacao) {
-          var note = document.createElement("div");
-          note.className = "area-note";
-          note.textContent = area.observacao;
-          box.appendChild(note);
-        }
-
-        if (area.equipamentos.length === 0) {
-          var empty = document.createElement("div");
-          empty.className = "warning";
-          empty.textContent = "Esta área não possui equipamentos.";
-          box.appendChild(empty);
-        }
-
-        for (var e = 0; e < area.equipamentos.length; e++) {
-          var eq = area.equipamentos[e];
-
-          var card = document.createElement("div");
-          card.className = "equipment-card" + (eq.selecionado ? " selected" : "");
-          card.setAttribute("data-eqid", eq.id);
-
-          var detalheClass = eq.detalheAberto ? "details-box open" : "details-box";
-          var toggleText = eq.detalheAberto ? "Ocultar detalhes" : "+ Detalhes";
-
-          card.innerHTML =
-            '<div class="equipment-main">' +
-              '<input class="equip-check" type="checkbox" ' +
-                (eq.selecionado ? "checked" : "") +
-                ' onchange="marcarEquipamento(\'' + area.id + '\', \'' + eq.id + '\', this.checked)">' +
-
-              '<div>' +
-                '<div class="equip-name">' + escapeHtml(eq.nome) + '</div>' +
-                '<div class="equip-area">' + escapeHtml(area.nome) + '</div>' +
-              '</div>' +
-            '</div>' +
-
-            '<div class="equipment-status">' +
-              '<select onchange="atualizarCampoEquipamento(\'' + area.id + '\', \'' + eq.id + '\', \'status\', this.value)">' +
-                '<option value="" ' + selected(eq.status, "") + '>Sem status</option>' +
-                '<option value="✅" ' + selected(eq.status, "✅") + '>✅ Conforme</option>' +
-                '<option value="❌" ' + selected(eq.status, "❌") + '>❌ Fora de funcionamento</option>' +
-                '<option value="⚠️" ' + selected(eq.status, "⚠️") + '>⚠️ Com pendência</option>' +
-                '<option value="🚧" ' + selected(eq.status, "🚧") + '>🚧 Bloqueado</option>' +
-                '<option value="🚨" ' + selected(eq.status, "🚨") + '>🚨 Atenção</option>' +
-              '</select>' +
-            '</div>' +
-
-            '<button class="details-toggle" onclick="alternarDetalhes(\'' + area.id + '\', \'' + eq.id + '\')">' + toggleText + '</button>' +
-
-            '<div class="' + detalheClass + '">' +
-              '<label>Observação</label>' +
-              '<textarea placeholder="Só aparece se preencher" oninput="atualizarCampoEquipamento(\'' + area.id + '\', \'' + eq.id + '\', \'observacao\', this.value)">' + escapeHtml(eq.observacao) + '</textarea>' +
-
-              '<label>Pendência</label>' +
-              '<textarea placeholder="Só aparece se preencher" oninput="atualizarCampoEquipamento(\'' + area.id + '\', \'' + eq.id + '\', \'pendencia\', this.value)">' + escapeHtml(eq.pendencia) + '</textarea>' +
-
-              '<label>Ação realizada</label>' +
-              '<textarea placeholder="Só aparece se preencher" oninput="atualizarCampoEquipamento(\'' + area.id + '\', \'' + eq.id + '\', \'acao\', this.value)">' + escapeHtml(eq.acao) + '</textarea>' +
-            '</div>';
-
-          box.appendChild(card);
-        }
-      }
-
-      atualizarContadorSelecionados();
-      atualizarCheckboxSelecionarTodos();
+      let users = getUsers();
+      users = users.filter(user => user.login !== login);
+      setUsers(users);
+      renderUsers();
     }
 
-    function selected(atual, valor) {
-      return atual === valor ? "selected" : "";
-    }
+    function renderUsers() {
+      const body = document.getElementById("usersTableBody");
+      const users = getUsers();
 
-    function encontrarEquipamento(areaId, eqId) {
-      for (var i = 0; i < areas.length; i++) {
-        if (areas[i].id === areaId) {
-          for (var j = 0; j < areas[i].equipamentos.length; j++) {
-            if (areas[i].equipamentos[j].id === eqId) {
-              return areas[i].equipamentos[j];
+      body.innerHTML = "";
+
+      users.forEach(user => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td>${escapeHtml(user.name)}</td>
+          <td>${escapeHtml(user.login)}</td>
+          <td>${escapeHtml(user.role)}</td>
+          <td>${escapeHtml(user.sector || "-")}</td>
+          <td>
+            ${
+              user.login === "admin"
+                ? '<span class="small">Padrão</span>'
+                : `<button class="btn-danger" onclick="deleteUser('${escapeJs(user.login)}')">Excluir</button>`
             }
+          </td>
+        `;
+
+        body.appendChild(tr);
+      });
+    }
+
+    function isAdmin() {
+      return currentUser && currentUser.role === "Administrador";
+    }
+
+    function canEdit() {
+      return currentUser && (
+        currentUser.role === "Administrador" ||
+        currentUser.role === "Operador"
+      );
+    }
+
+    function applyPermissions() {
+      const disabled = !canEdit();
+
+      document.querySelectorAll("input, select, textarea, button").forEach(el => {
+        const isLoginArea = el.closest("#loginSection");
+        const isLogoutButton = el.textContent === "Sair";
+        const isHistoryRefresh = el.textContent === "Atualizar histórico";
+
+        if (isLoginArea || isLogoutButton || isHistoryRefresh) return;
+
+        if (currentUser && currentUser.role === "Visualizador") {
+          if (el.id === "equipmentSearch") {
+            el.disabled = false;
+          } else {
+            el.disabled = true;
           }
         }
-      }
-
-      return null;
+      });
     }
 
-    function marcarEquipamento(areaId, eqId, marcado) {
-      var eq = encontrarEquipamento(areaId, eqId);
-      if (!eq) return;
+    function loadState() {
+      const saved = localStorage.getItem(STORAGE_STATE);
 
-      eq.selecionado = marcado;
-
-      var card = document.querySelector('[data-eqid="' + eqId + '"]');
-      if (card) {
-        if (marcado) {
-          card.classList.add("selected");
-        } else {
-          card.classList.remove("selected");
-        }
+      if (saved) {
+        state = JSON.parse(saved);
       }
 
-      atualizarContadorSelecionados();
-      atualizarCheckboxSelecionarTodos();
-      salvarDadosLocais();
+      equipments.forEach(eq => {
+        if (!state[eq.id]) {
+          state[eq.id] = {
+            status: "",
+            note: ""
+          };
+        }
+      });
     }
 
-    function atualizarCampoEquipamento(areaId, eqId, campo, valor) {
-      var eq = encontrarEquipamento(areaId, eqId);
-      if (!eq) return;
-
-      eq[campo] = valor;
-      salvarDadosLocais();
+    function saveState() {
+      localStorage.setItem(STORAGE_STATE, JSON.stringify(state));
     }
 
-    function alternarDetalhes(areaId, eqId) {
-      var eq = encontrarEquipamento(areaId, eqId);
-      if (!eq) return;
-
-      eq.detalheAberto = !eq.detalheAberto;
-      renderEquipamentos();
-      salvarDadosLocais();
-    }
-
-    function toggleSelecionarTodos() {
-      var checked = document.getElementById("selectAllVisible").checked;
-      var areasVisiveis = obterAreasVisiveis();
-
-      for (var i = 0; i < areasVisiveis.length; i++) {
-        for (var j = 0; j < areasVisiveis[i].equipamentos.length; j++) {
-          areasVisiveis[i].equipamentos[j].selecionado = checked;
-        }
-      }
-
-      renderEquipamentos();
-      salvarDadosLocais();
-    }
-
-    function atualizarCheckboxSelecionarTodos() {
-      var check = document.getElementById("selectAllVisible");
-      if (!check) return;
-
-      var areasVisiveis = obterAreasVisiveis();
-      var total = 0;
-      var marcados = 0;
-
-      for (var i = 0; i < areasVisiveis.length; i++) {
-        for (var j = 0; j < areasVisiveis[i].equipamentos.length; j++) {
-          total++;
-          if (areasVisiveis[i].equipamentos[j].selecionado) {
-            marcados++;
-          }
-        }
-      }
-
-      check.checked = total > 0 && total === marcados;
-    }
-
-    function limparSelecao() {
-      for (var i = 0; i < areas.length; i++) {
-        for (var j = 0; j < areas[i].equipamentos.length; j++) {
-          areas[i].equipamentos[j].selecionado = false;
-        }
-      }
-
-      atualizarContadorSelecionados();
-      salvarDadosLocais();
-    }
-
-    function atualizarContadorSelecionados() {
-      var areasVisiveis = obterAreasVisiveis();
-      var total = 0;
-
-      for (var i = 0; i < areasVisiveis.length; i++) {
-        for (var j = 0; j < areasVisiveis[i].equipamentos.length; j++) {
-          if (areasVisiveis[i].equipamentos[j].selecionado) {
-            total++;
-          }
-        }
-      }
-
-      var el = document.getElementById("contadorSelecionados");
-      if (el) {
-        el.textContent = total + (total === 1 ? " selecionado" : " selecionados");
-      }
-    }
-
-    function aplicarStatusMassa() {
-      var status = document.getElementById("statusMassa").value;
-      var areasVisiveis = obterAreasVisiveis();
-      var total = 0;
-
-      for (var i = 0; i < areasVisiveis.length; i++) {
-        for (var j = 0; j < areasVisiveis[i].equipamentos.length; j++) {
-          var eq = areasVisiveis[i].equipamentos[j];
-
-          if (eq.selecionado) {
-            eq.status = status;
-            total++;
-          }
-        }
-      }
-
-      if (total === 0) {
-        abrirModal("Atenção", "Nenhum equipamento foi selecionado.");
-        return;
-      }
-
-      renderEquipamentos();
-      salvarDadosLocais();
-      abrirModal("Concluído", "Condição aplicada em " + total + " equipamento(s).");
-    }
-
-    function gerarRelatorioFinal() {
-      var data = document.getElementById("dataTurno").value;
-      var turno = document.getElementById("turnoTexto").value.trim();
-      var checklist = document.getElementById("checklistTexto").value.trim();
-      var ordens = document.getElementById("ordensTexto").value.trim();
-      var obsGeral = document.getElementById("obsGeral").value.trim();
-
-      var areasVisiveis = obterAreasVisiveis();
-      var linhas = [];
-
-      linhas.push("Relatório de turno - " + obterNomeTipo());
-      linhas.push("");
-
-      if (data) {
-        linhas.push("Data: " + formatarData(data));
-      }
-
-      if (turno) {
-        linhas.push("Turno: " + turno);
-      }
-
-      var agrupado = agruparColaboradores();
-
-      for (var funcao in agrupado) {
-        if (agrupado.hasOwnProperty(funcao)) {
-          linhas.push(funcao + ": " + agrupado[funcao].join(" / "));
-        }
-      }
-
-      linhas.push("");
-      linhas.push("LEGENDA:");
-      linhas.push("✅ - Conforme");
-      linhas.push("❌ - Fora de funcionamento");
-      linhas.push("⚠️ - Em funcionamento com pendência");
-      linhas.push("🚧 - Bloqueado para manutenção");
-      linhas.push("🚨 - Atenção / ocorrência");
-      linhas.push("");
-
-      if (checklist) {
-        linhas.push("CHECK LIST:");
-        adicionarTextoMultilinha(linhas, checklist);
-        linhas.push("");
-      }
-
-      if (ordens) {
-        linhas.push("ORDENS DE SERVIÇO:");
-        adicionarTextoMultilinha(linhas, ordens);
-        linhas.push("");
-      }
-
-      for (var a = 0; a < areasVisiveis.length; a++) {
-        var area = areasVisiveis[a];
-
-        if (!area.observacao && area.equipamentos.length === 0) {
-          continue;
-        }
-
-        linhas.push(area.nome);
-
-        if (area.observacao) {
-          linhas.push(area.observacao);
-        }
-
-        for (var e = 0; e < area.equipamentos.length; e++) {
-          var eq = area.equipamentos[e];
-
-          var temConteudo = eq.status || eq.observacao || eq.pendencia || eq.acao;
-
-          if (!temConteudo) {
-            continue;
-          }
-
-          var linha = "- " + eq.nome;
-
-          if (eq.status) {
-            linha += " " + eq.status;
-          }
-
-          if (eq.observacao) {
-            linha += " " + eq.observacao;
-          }
-
-          linhas.push(linha);
-
-          if (eq.pendencia) {
-            linhas.push("  Pendência: " + eq.pendencia);
-          }
-
-          if (eq.acao) {
-            linhas.push("  Ação realizada: " + eq.acao);
-          }
-        }
-
-        linhas.push("");
-      }
-
-      var pendencias = coletarPendencias(areasVisiveis);
-
-      if (pendencias.length > 0) {
-        linhas.push("PENDÊNCIAS:");
-        for (var p = 0; p < pendencias.length; p++) {
-          linhas.push("🚨 Pendência " + pad2(p + 1) + ": " + pendencias[p]);
-        }
-        linhas.push("");
-      }
-
-      if (obsGeral) {
-        linhas.push("OBSERVAÇÃO GERAL:");
-        adicionarTextoMultilinha(linhas, obsGeral);
-        linhas.push("");
-      }
-
-      linhas.push("Atte.");
-
-      var textoFinal = limparQuebras(linhas.join("\n"));
-
-      document.getElementById("saidaRelatorio").textContent = textoFinal;
-
-      salvarDadosLocais();
-      goStep(4);
-    }
-
-    function agruparColaboradores() {
-      var agrupado = {};
-
-      for (var i = 0; i < colaboradores.length; i++) {
-        var c = colaboradores[i];
-
-        if (!agrupado[c.funcao]) {
-          agrupado[c.funcao] = [];
-        }
-
-        agrupado[c.funcao].push(c.nome);
-      }
-
-      return agrupado;
-    }
-
-    function adicionarTextoMultilinha(linhas, texto) {
-      var partes = texto.split("\n");
-
-      for (var i = 0; i < partes.length; i++) {
-        var linha = partes[i].trim();
-        if (linha) {
-          linhas.push(linha);
-        }
-      }
-    }
-
-    function coletarPendencias(areasBase) {
-      var lista = [];
-
-      for (var a = 0; a < areasBase.length; a++) {
-        var area = areasBase[a];
-
-        for (var e = 0; e < area.equipamentos.length; e++) {
-          var eq = area.equipamentos[e];
-
-          if (eq.pendencia) {
-            lista.push(area.nome + " - " + eq.nome + ": " + eq.pendencia);
-          }
-        }
-      }
-
-      return lista;
-    }
-
-    function copiarRelatorio() {
-      var texto = document.getElementById("saidaRelatorio").textContent;
-
-      if (!texto || texto.indexOf("Clique em") === 0) {
-        abrirModal("Atenção", "Gere o relatório antes de copiar.");
-        return;
-      }
-
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(texto).then(function() {
-          mostrarCopiado();
-        }).catch(function() {
-          copiarFallback(texto);
+    function renderEquipments() {
+      saveInputsBeforeRender();
+
+      const container = document.getElementById("equipmentContainer");
+      const search = normalizeText(document.getElementById("equipmentSearch").value || "");
+
+      container.innerHTML = "";
+
+      const filtered = equipments.filter(eq => {
+        const text = normalizeText(`${eq.name} ${eq.plant} ${eq.category}`);
+        return text.includes(search);
+      });
+
+      document.getElementById("searchInfo").textContent =
+        search
+          ? `Resultado da busca: ${filtered.length} equipamento(s) encontrado(s).`
+          : "Digite para localizar rapidamente o equipamento que deseja relatar.";
+
+      const grouped = {};
+
+      filtered.forEach(eq => {
+        if (!grouped[eq.plant]) grouped[eq.plant] = [];
+        grouped[eq.plant].push(eq);
+      });
+
+      Object.keys(grouped).forEach(plant => {
+        const card = document.createElement("section");
+        card.className = "card";
+
+        const title = document.createElement("div");
+        title.className = "plant-title";
+        title.innerHTML = `
+          <h3>${plant}</h3>
+          <div class="plant-actions">
+            <button class="btn-success" onclick="markAllPlant('${plant}', 'conforme')">Marcar todos ${plant}</button>
+            <button class="btn-warning" onclick="markAllPlant('${plant}', 'pendencia')">Todos com pendência</button>
+            <button class="btn-muted" onclick="clearPlant('${plant}')">Limpar ${plant}</button>
+          </div>
+        `;
+
+        card.appendChild(title);
+
+        grouped[plant].forEach(eq => {
+          const equipmentDiv = document.createElement("div");
+          equipmentDiv.className = "equipment";
+
+          const current = state[eq.id] || { status: "", note: "" };
+          const badgeClass = getBadgeClass(current.status);
+          const badgeText = getStatusText(current.status);
+
+          equipmentDiv.innerHTML = `
+            <div class="equipment-header">
+              <div>
+                <div class="equipment-name">${eq.name}</div>
+                <div class="equipment-meta">${eq.plant} • ${eq.category}</div>
+              </div>
+              <span class="status-badge ${badgeClass}">${badgeText}</span>
+            </div>
+
+            <div class="status-row">
+              <div>
+                <label>Status</label>
+                <select data-id="${eq.id}" data-field="status" onchange="updateEquipment('${eq.id}')">
+                  <option value="">Selecione</option>
+                  <option value="conforme" ${current.status === "conforme" ? "selected" : ""}>✅ Conforme</option>
+                  <option value="fora" ${current.status === "fora" ? "selected" : ""}>❌ Fora de funcionamento</option>
+                  <option value="pendencia" ${current.status === "pendencia" ? "selected" : ""}>⚠️ Em funcionamento com pendência</option>
+                </select>
+              </div>
+
+              <div>
+                <label>Observação / Pendência</label>
+                <textarea
+                  data-id="${eq.id}"
+                  data-field="note"
+                  oninput="updateEquipment('${eq.id}')"
+                  placeholder="Descreva a pendência ou observação, se houver."
+                >${escapeHtml(current.note || "")}</textarea>
+              </div>
+            </div>
+          `;
+
+          card.appendChild(equipmentDiv);
         });
-      } else {
-        copiarFallback(texto);
-      }
+
+        container.appendChild(card);
+      });
+
+      applyPermissions();
     }
 
-    function copiarFallback(texto) {
-      var area = document.createElement("textarea");
-      area.value = texto;
-      area.setAttribute("readonly", "");
-      area.style.position = "fixed";
-      area.style.top = "0";
-      area.style.left = "0";
-      area.style.opacity = "0";
-      document.body.appendChild(area);
-      area.focus();
-      area.select();
+    function saveInputsBeforeRender() {
+      document.querySelectorAll("[data-id]").forEach(el => {
+        const id = el.getAttribute("data-id");
+        const field = el.getAttribute("data-field");
 
-      try {
-        document.execCommand("copy");
-        mostrarCopiado();
-      } catch (e) {
-        abrirModal("Copiar manualmente", "No iPhone, caso não copie automático, pressione o texto do relatório, selecione tudo e copie manualmente.");
-      }
+        if (!state[id]) {
+          state[id] = {
+            status: "",
+            note: ""
+          };
+        }
 
-      document.body.removeChild(area);
+        state[id][field] = el.value;
+      });
+
+      saveState();
     }
 
-    function mostrarCopiado() {
-      var msg = document.getElementById("copyMsg");
-      msg.classList.remove("hidden");
-
-      setTimeout(function() {
-        msg.classList.add("hidden");
-      }, 2200);
-    }
-
-    function abrirModal(titulo, texto) {
-      document.getElementById("modalTitle").textContent = titulo;
-      document.getElementById("modalText").textContent = texto;
-      document.getElementById("modalBg").classList.add("open");
-    }
-
-    function fecharModal() {
-      document.getElementById("modalBg").classList.remove("open");
-    }
-
-    function formatarData(valor) {
-      if (!valor) return "";
-
-      var partes = valor.split("-");
-      if (partes.length !== 3) return valor;
-
-      return partes[2] + "/" + partes[1] + "/" + partes[0];
-    }
-
-    function limparQuebras(texto) {
-      while (texto.indexOf("\n\n\n") >= 0) {
-        texto = texto.replace("\n\n\n", "\n\n");
+    function updateEquipment(id) {
+      if (!canEdit()) {
+        showMessage("Você não tem permissão para editar.");
+        renderEquipments();
+        return;
       }
 
-      return texto.trim();
+      const statusEl = document.querySelector(`[data-id="${id}"][data-field="status"]`);
+      const noteEl = document.querySelector(`[data-id="${id}"][data-field="note"]`);
+
+      state[id] = {
+        status: statusEl ? statusEl.value : "",
+        note: noteEl ? noteEl.value : ""
+      };
+
+      saveState();
+      renderEquipments();
     }
 
-    function pad2(num) {
-      return num < 10 ? "0" + num : String(num);
+    function markAllPlant(plant, status) {
+      if (!canEdit()) {
+        showMessage("Você não tem permissão para editar.");
+        return;
+      }
+
+      saveInputsBeforeRender();
+
+      equipments
+        .filter(eq => eq.plant === plant)
+        .forEach(eq => {
+          state[eq.id] = {
+            status,
+            note: status === "pendencia" ? state[eq.id]?.note || "" : ""
+          };
+        });
+
+      saveState();
+      renderEquipments();
     }
 
-    function escapeHtml(texto) {
-      return String(texto || "")
-        .replace(/&/g, "&amp;")
-        .replace(/"/g, "&quot;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
+    function clearPlant(plant) {
+      if (!canEdit()) {
+        showMessage("Você não tem permissão para editar.");
+        return;
+      }
+
+      equipments
+        .filter(eq => eq.plant === plant)
+        .forEach(eq => {
+          state[eq.id] = {
+            status: "",
+            note: ""
+          };
+        });
+
+      saveState();
+      renderEquipments();
     }
+
+    function clearAll() {
+      if (!canEdit()) {
+        showMessage("Você não tem permissão para editar.");
+        return;
+      }
+
+      equipments.forEach(eq => {
+        state[eq.id] = {
+          status: "",
+          note: ""
+        };
+      });
+
+      document.getElementById("reportOutput").textContent =
+        "O relatório gerado aparecerá aqui.";
+
+      saveState();
+      renderEquipments();
+    }
+
+    function generateReport() {
+      saveInputsBeforeRender();
+
+      const dateValue = document.getElementById("reportDate").value;
+      const shift = document.getElementById("reportShift").value.trim();
+      const operator = document.getElementById("reportOperator").value.trim();
+
+      const formattedDate = formatDate(dateValue);
+
+      let text = "";
+      text += "*RELATÓRIO OPERACIONAL*\n\n";
+      text += `Data: ${formattedDate}\n`;
+      text += `Turno: ${shift || "-"}\n`;
+      text += `Operador: ${operator || "-"}\n\n`;
+
+      const plants = [...new Set(equipments.map(eq => eq.plant))];
+
+      plants.forEach(plant => {
+        text += `*${plant.toUpperCase()}*\n\n`;
+
+        equipments
+          .filter(eq => eq.plant === plant)
+          .forEach(eq => {
+            const item = state[eq.id] || { status: "", note: "" };
+
+            if (!item.status && !item.note) {
+              return;
+            }
+
+            text += `*${eq.name}*\n`;
+
+            if (item.status === "conforme") {
+              text += "✅ - Conforme\n";
+            } else if (item.status === "fora") {
+              text += "❌ - Fora de funcionamento\n";
+            } else if (item.status === "pendencia") {
+              text += "⚠️ - Em funcionamento com pendência\n";
+            } else {
+              text += "⚠️ - Status não informado\n";
+            }
+
+            if (item.note && item.note.trim()) {
+              text += `• ${item.note.trim()}\n`;
+            }
+
+            text += "\n";
+          });
+      });
+
+      text += "Atte.,";
+
+      document.getElementById("reportOutput").textContent = text;
+      return text;
+    }
+
+    function copyReport() {
+      const text = generateReport();
+
+      if (!navigator.clipboard) {
+        showMessage("Seu navegador não permitiu copiar automaticamente. Selecione o texto e copie manualmente.");
+        return;
+      }
+
+      navigator.clipboard.writeText(text)
+        .then(() => {
+          showMessage("Relatório copiado para colar no WhatsApp.");
+        })
+        .catch(() => {
+          showMessage("Não foi possível copiar automaticamente. Copie manualmente.");
+        });
+    }
+
+    function saveLocalReport() {
+      const text = generateReport();
+
+      const reports = JSON.parse(localStorage.getItem(STORAGE_REPORTS) || "[]");
+
+      reports.unshift({
+        id: Date.now(),
+        createdAt: new Date().toLocaleString("pt-BR"),
+        text
+      });
+
+      localStorage.setItem(STORAGE_REPORTS, JSON.stringify(reports));
+      renderHistory();
+      showMessage("Relatório salvo no navegador.");
+    }
+
+    function renderHistory() {
+      const container = document.getElementById("historyContainer");
+      if (!container) return;
+
+      const reports = JSON.parse(localStorage.getItem(STORAGE_REPORTS) || "[]");
+
+      if (!reports.length) {
+        container.innerHTML = "Nenhum relatório salvo ainda.";
+        return;
+      }
+
+      container.innerHTML = reports.map(report => `
+        <div style="border:1px solid #e5e7eb; border-radius:8px; padding:10px; margin-top:8px; background:#fff;">
+          <strong>${escapeHtml(report.createdAt)}</strong>
+          <pre style="white-space:pre-wrap; font-family:Arial; font-size:12px;">${escapeHtml(report.text)}</pre>
+        </div>
+      `).join("");
+    }
+
+    function clearHistory() {
+      if (!isAdmin()) {
+        showMessage("Apenas administrador pode apagar o histórico.");
+        return;
+      }
+
+      localStorage.removeItem(STORAGE_REPORTS);
+      renderHistory();
+    }
+
+    function getBadgeClass(status) {
+      if (status === "conforme") return "badge-ok";
+      if (status === "fora") return "badge-bad";
+      if (status === "pendencia") return "badge-pending";
+      return "badge-empty";
+    }
+
+    function getStatusText(status) {
+      if (status === "conforme") return "✅ Conforme";
+      if (status === "fora") return "❌ Fora";
+      if (status === "pendencia") return "⚠️ Pendência";
+      return "Sem status";
+    }
+
+    function normalizeText(text) {
+      return String(text)
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+    }
+
+    function formatDate(dateValue) {
+      if (!dateValue) return "-";
+
+      const parts = dateValue.split("-");
+      if (parts.length !== 3) return dateValue;
+
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+
+    function showMessage(message) {
+      const old = document.getElementById("toastMessage");
+      if (old) old.remove();
+
+      const toast = document.createElement("div");
+      toast.id = "toastMessage";
+      toast.textContent = message;
+      toast.style.position = "fixed";
+      toast.style.left = "50%";
+      toast.style.bottom = "20px";
+      toast.style.transform = "translateX(-50%)";
+      toast.style.background = "#111827";
+      toast.style.color = "white";
+      toast.style.padding = "12px 18px";
+      toast.style.borderRadius = "10px";
+      toast.style.boxShadow = "0 4px 12px rgba(0,0,0,0.2)";
+      toast.style.zIndex = "9999";
+      toast.style.maxWidth = "90%";
+      toast.style.textAlign = "center";
+
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.remove();
+      }, 2600);
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function escapeJs(value) {
+      return String(value)
+        .replaceAll("\\", "\\\\")
+        .replaceAll("'", "\\'");
+    }
+
+    window.addEventListener("load", init);
   </script>
 </body>
 </html>
