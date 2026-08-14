@@ -2,135 +2,436 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>Sistema Operacional</title>
+  <title>Relatório de Turno</title>
 
   <style>
-    /* COLE AQUI TODO O CSS DO SEU HTML */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f3f4f6;
+      color: #111827;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .header {
+      background: #111827;
+      color: #ffffff;
+      padding: 18px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .header p {
+      margin: 6px 0 0;
+      font-size: 14px;
+      color: #d1d5db;
+    }
+
+    .status-box {
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      font-weight: bold;
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .status-ok {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status-error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .card {
+      background: #ffffff;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      font-size: 18px;
+      color: #111827;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #374151;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 15px;
+      background: #ffffff;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    button {
+      border: none;
+      border-radius: 8px;
+      padding: 11px 16px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: #ffffff;
+    }
+
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .btn-danger {
+      background: #dc2626;
+      color: #ffffff;
+    }
+
+    .lista {
+      display: grid;
+      gap: 10px;
+    }
+
+    .item {
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 12px;
+      background: #f9fafb;
+    }
+
+    .item strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .item small {
+      color: #6b7280;
+    }
+
+    .legenda {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: 14px;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 700px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .container {
+        padding: 10px;
+      }
+
+      .header h1 {
+        font-size: 19px;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 
 <body>
+  <div class="container">
 
-  <!-- COLE AQUI TODO O CONTEÚDO VISUAL DO SEU HTML -->
+    <div class="header">
+      <h1>Relatório de Turno</h1>
+      <p>Sistema operacional conectado ao Supabase</p>
+    </div>
+
+    <div id="statusConexao" class="status-box">
+      Verificando conexão com o banco de dados...
+    </div>
+
+    <div class="card">
+      <h2>Novo Relatório</h2>
+
+      <div class="grid">
+        <div>
+          <label for="data">Data</label>
+          <input type="date" id="data" />
+        </div>
+
+        <div>
+          <label for="turno">Turno</label>
+          <input type="text" id="turno" placeholder="Ex: 7:30 às 16:00" />
+        </div>
+
+        <div>
+          <label for="mecanico">Mecânico</label>
+          <input type="text" id="mecanico" placeholder="Nome do mecânico" />
+        </div>
+
+        <div>
+          <label for="auxiliar">Auxiliar</label>
+          <input type="text" id="auxiliar" placeholder="Nome do auxiliar" />
+        </div>
+
+        <div>
+          <label for="equipamento">Equipamento</label>
+          <input type="text" id="equipamento" placeholder="Ex: INFLÁVEL 01" />
+        </div>
+
+        <div>
+          <label for="status">Status</label>
+          <select id="status">
+            <option value="✅ - Conforme">✅ - Conforme</option>
+            <option value="❌ - Fora de funcionamento">❌ - Fora de funcionamento</option>
+            <option value="⚠️ - Em funcionamento com pendência">⚠️ - Em funcionamento com pendência</option>
+          </select>
+        </div>
+
+        <div class="full">
+          <label for="observacao">Observação</label>
+          <textarea id="observacao" placeholder="Descreva a pendência, serviço realizado ou observação do turno"></textarea>
+        </div>
+      </div>
+
+      <div class="legenda">
+        <div>✅ - Conforme</div>
+        <div>❌ - Fora de funcionamento</div>
+        <div>⚠️ - Em funcionamento com pendência</div>
+      </div>
+
+      <div class="buttons">
+        <button class="btn-primary" onclick="salvarRelatorio()">Salvar Relatório</button>
+        <button class="btn-secondary" onclick="carregarRelatorios()">Atualizar Lista</button>
+        <button class="btn-danger" onclick="limparFormulario()">Limpar</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Relatórios Salvos</h2>
+      <div id="listaRelatorios" class="lista">
+        Carregando relatórios...
+      </div>
+    </div>
+
+  </div>
 
   <script type="module">
     import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-    const SUPABASE_URL = 'https://atdoqtissihbiqziblde.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_IyeN221wwPMbMoDn39Y9Jw_hrropoUI';
+    /*
+      DADOS DO SUPABASE
+      Se precisar trocar, me mande sua URL e anon key que eu devolvo o arquivo completo.
+    */
+    const SUPABASE_URL = 'COLE_AQUI_SUA_URL_DO_SUPABASE';
+    const SUPABASE_ANON_KEY = 'COLE_AQUI_SUA_CHAVE_ANON_PUBLIC';
+
+    /*
+      Nome da tabela usada no Supabase.
+      Estou considerando: relatorios_operacionais
+    */
+    const TABELA = 'relatorios_operacionais';
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // =====================================
-    // FUNÇÃO PARA TESTAR CONEXÃO
-    // =====================================
-    async function testarConexao() {
-      const { data, error } = await supabase
-        .from('relatorios')
-        .select('*')
-        .limit(1);
+    const statusConexao = document.getElementById('statusConexao');
+    const listaRelatorios = document.getElementById('listaRelatorios');
 
-      if (error) {
-        console.error('Erro Supabase:', error);
-        return false;
+    function mostrarStatus(mensagem, tipo) {
+      statusConexao.textContent = mensagem;
+      statusConexao.className = 'status-box';
+
+      if (tipo === 'ok') {
+        statusConexao.classList.add('status-ok');
       }
 
-      console.log('Conectado ao Supabase:', data);
-      return true;
+      if (tipo === 'erro') {
+        statusConexao.classList.add('status-error');
+      }
     }
+
+    function dataHoje() {
+      const hoje = new Date();
+      const ano = hoje.getFullYear();
+      const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+      const dia = String(hoje.getDate()).padStart(2, '0');
+      return `${ano}-${mes}-${dia}`;
+    }
+
+    document.getElementById('data').value = dataHoje();
+
+    async function testarConexao() {
+      try {
+        const { error } = await supabase
+          .from(TABELA)
+          .select('id')
+          .limit(1);
+
+        if (error) {
+          console.error('Erro Supabase:', error);
+          mostrarStatus('Erro no Supabase: confira URL, chave ou nome da tabela.', 'erro');
+          return;
+        }
+
+        mostrarStatus('Banco de dados conectado com sucesso.', 'ok');
+      } catch (erro) {
+        console.error('Erro geral:', erro);
+        mostrarStatus('Erro ao conectar com o banco de dados.', 'erro');
+      }
+    }
+
+    async function salvarRelatorio() {
+      const data = document.getElementById('data').value;
+      const turno = document.getElementById('turno').value.trim();
+      const mecanico = document.getElementById('mecanico').value.trim();
+      const auxiliar = document.getElementById('auxiliar').value.trim();
+      const equipamento = document.getElementById('equipamento').value.trim();
+      const status = document.getElementById('status').value;
+      const observacao = document.getElementById('observacao').value.trim();
+
+      if (!data || !turno || !equipamento) {
+        mostrarStatus('Preencha pelo menos Data, Turno e Equipamento.', 'erro');
+        return;
+      }
+
+      const novoRelatorio = {
+        data: data,
+        turno: turno,
+        mecanico: mecanico,
+        auxiliar: auxiliar,
+        equipamento: equipamento,
+        status: status,
+        observacao: observacao
+      };
+
+      try {
+        const { error } = await supabase
+          .from(TABELA)
+          .insert([novoRelatorio]);
+
+        if (error) {
+          console.error('Erro ao salvar:', error);
+          mostrarStatus('Erro ao salvar no Supabase. Confira as colunas da tabela.', 'erro');
+          return;
+        }
+
+        mostrarStatus('Relatório salvo com sucesso.', 'ok');
+        limparFormulario();
+        carregarRelatorios();
+
+      } catch (erro) {
+        console.error('Erro geral ao salvar:', erro);
+        mostrarStatus('Erro inesperado ao salvar.', 'erro');
+      }
+    }
+
+    async function carregarRelatorios() {
+      listaRelatorios.innerHTML = 'Carregando relatórios...';
+
+      try {
+        const { data, error } = await supabase
+          .from(TABELA)
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(30);
+
+        if (error) {
+          console.error('Erro ao carregar:', error);
+          listaRelatorios.innerHTML = 'Erro ao carregar relatórios.';
+          mostrarStatus('Erro ao buscar dados no Supabase.', 'erro');
+          return;
+        }
+
+        if (!data || data.length === 0) {
+          listaRelatorios.innerHTML = 'Nenhum relatório salvo ainda.';
+          return;
+        }
+
+        listaRelatorios.innerHTML = data.map((item) => {
+          return `
+            <div class="item">
+              <strong>${item.equipamento || 'Sem equipamento'} — ${item.status || ''}</strong>
+              <small>Data: ${item.data || '-'} | Turno: ${item.turno || '-'}</small>
+              <div>Mecânico: ${item.mecanico || '-'}</div>
+              <div>Auxiliar: ${item.auxiliar || '-'}</div>
+              <div>Observação: ${item.observacao || '-'}</div>
+            </div>
+          `;
+        }).join('');
+
+      } catch (erro) {
+        console.error('Erro geral ao carregar:', erro);
+        listaRelatorios.innerHTML = 'Erro inesperado ao carregar relatórios.';
+      }
+    }
+
+    function limparFormulario() {
+      document.getElementById('data').value = dataHoje();
+      document.getElementById('turno').value = '';
+      document.getElementById('mecanico').value = '';
+      document.getElementById('auxiliar').value = '';
+      document.getElementById('equipamento').value = '';
+      document.getElementById('status').value = '✅ - Conforme';
+      document.getElementById('observacao').value = '';
+    }
+
+    window.salvarRelatorio = salvarRelatorio;
+    window.carregarRelatorios = carregarRelatorios;
+    window.limparFormulario = limparFormulario;
 
     testarConexao();
-
-    // =====================================
-    // FUNÇÃO PARA SALVAR NO BANCO
-    // =====================================
-    async function salvarRelatorio(dados) {
-      const { data, error } = await supabase
-        .from('relatorios')
-        .insert([dados])
-        .select();
-
-      if (error) {
-        console.error('Erro ao salvar:', error);
-        return {
-          sucesso: false,
-          erro: error.message
-        };
-      }
-
-      return {
-        sucesso: true,
-        data
-      };
-    }
-
-    // =====================================
-    // FUNÇÃO PARA BUSCAR RELATÓRIOS
-    // =====================================
-    async function buscarRelatorios() {
-      const { data, error } = await supabase
-        .from('relatorios')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('Erro ao buscar:', error);
-        return [];
-      }
-
-      return data;
-    }
-
-    // =====================================
-    // FUNÇÃO PARA ATUALIZAR RELATÓRIO
-    // =====================================
-    async function atualizarRelatorio(id, dados) {
-      const { data, error } = await supabase
-        .from('relatorios')
-        .update(dados)
-        .eq('id', id)
-        .select();
-
-      if (error) {
-        console.error('Erro ao atualizar:', error);
-        return {
-          sucesso: false,
-          erro: error.message
-        };
-      }
-
-      return {
-        sucesso: true,
-        data
-      };
-    }
-
-    // =====================================
-    // FUNÇÃO PARA EXCLUIR RELATÓRIO
-    // =====================================
-    async function excluirRelatorio(id) {
-      const { error } = await supabase
-        .from('relatorios')
-        .delete()
-        .eq('id', id);
-
-      if (error) {
-        console.error('Erro ao excluir:', error);
-        return false;
-      }
-
-      return true;
-    }
-
-    // Deixar funções disponíveis para os botões do HTML
-    window.salvarRelatorio = salvarRelatorio;
-    window.buscarRelatorios = buscarRelatorios;
-    window.atualizarRelatorio = atualizarRelatorio;
-    window.excluirRelatorio = excluirRelatorio;
+    carregarRelatorios();
   </script>
-
 </body>
 </html>
